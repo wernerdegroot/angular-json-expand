@@ -1,0 +1,33 @@
+[Converter<S, T>|
++ toS(from: T): S;
++ toT(from: S): T;
++ pipe<U>(converter: Converter<T, U>): Converter<S, U>]
+
+[PropertyExchangeService<S, T>|
+- converter: Converter<S, T>;
+- defaultValue: T|
+
++ pipe<U>(converter: Converter<T, U>): PropertyExchangeService<S, U>;
++ default(T defaultValue): PropertyExchangeService<S, T>;
++ getDefault(): T]
+
+[FromJsonService<T>|
++ fromJson(propertyExchangeService: PropertyExchangeService<?, ?>, from: Object, fromProperty: string, to: T, toPrpoerty: string)]
+
+[ToJsonService<T>|
++ toJson(propertyExchangeService: PropertyExchangeService<?, ?>, from: T, fromProperty: string, to: Object, toProperty: string)]
+
+[JsonExchange<T>|
+- jsonProperty: string;
+- entityProperty: string;
+- fromJsonService: FromJsonService<T>;
+- toJsonService: ToJsonService<T>|
+
++ fromJson(from: Object, to: T);
++ toJson(from: T, to: Object)]
+
+[FromJsonService<T>]->[PropertyExchangeService<S, T>]
+[PropertyExchangeService<S, T>]+->[Converter<S, T>]
+[ToJsonService<T>]->[PropertyExchangeService<S, T>]
+[JsonExchange<T>]o->[FromJsonService<T>]
+[JsonExchange<T>]o->[ToJsonService<T>]
