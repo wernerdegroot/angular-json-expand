@@ -1,13 +1,9 @@
 {
-  "name": "gulp-typescript",
-  "version": "0.0.0",
-  "description": "",
-  "main": "index.js",
-  "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
-  },
-  "author": "",
-  "license": "ISC",
+  "name": "angular-json-expand",
+  "version": "0.1.0",
+  "description": "JSON-expand for AngularJS",
+  "author": "Werner de Groot",
+  "license": "MIT",
   "devDependencies": {
     "chai": "^2.2.0",
     "gulp": "^3.8.11",
