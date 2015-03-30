@@ -9,11 +9,26 @@ gulp.task('compile', function(){
     .pipe(gulp.dest('dist/src'))
 });
 
-gulp.task('test', function(){
+gulp.task('build-test', function(){
   gulp.src(['test/AnotherTestTest.ts'])
     .pipe(typescript({
     	out: "target.js",
     	module: "commonjs"
     }))
     .pipe(gulp.dest('dist/test'))
+});
+
+var karma = require('gulp-karma');
+ 
+var testFiles = [
+  'dist/test/*.js'
+];
+ 
+gulp.task('test', ['build-test'], function() {
+  // Be sure to return the stream 
+  return gulp.src(testFiles)
+    .pipe(karma({
+      configFile: 'karma.conf.js',
+      action: 'run'
+    }));
 });
