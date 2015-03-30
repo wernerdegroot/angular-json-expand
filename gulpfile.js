@@ -10,7 +10,7 @@ gulp.task('compile', function(){
 });
 
 gulp.task('build-test', function(){
-  gulp.src(['test/AnotherTestTest.ts'])
+  return gulp.src(['test/AnotherTestTest.ts'])
     .pipe(typescript({
     	out: "target.js",
     	module: "commonjs"
