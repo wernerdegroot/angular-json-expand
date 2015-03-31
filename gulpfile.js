@@ -1,6 +1,6 @@
 var gulp = require('gulp');
 var typescript = require('gulp-tsc');
- 
+
 gulp.task('compile', function(){
   gulp.src(['src/AnotherTest.ts'])
     .pipe(typescript({
@@ -10,22 +10,21 @@ gulp.task('compile', function(){
 });
 
 gulp.task('build-test', function(){
-  gulp.src(['test/AnotherTestTest.ts'])
+  return gulp.src(['test/**/**.ts'])
     .pipe(typescript({
-    	out: "target.js",
-    	module: "commonjs"
+    	out: "test.js"
     }))
     .pipe(gulp.dest('dist/test'))
 });
 
 var karma = require('gulp-karma');
- 
+
 var testFiles = [
   'dist/test/*.js'
 ];
- 
+
 gulp.task('test', ['build-test'], function() {
-  // Be sure to return the stream 
+  // Be sure to return the stream
   return gulp.src(testFiles)
     .pipe(karma({
       configFile: 'karma.conf.js',
