@@ -20,7 +20,7 @@ module converters {
             };
             second.from.withArgs(1).returns("one");
 
-            var pipedConverter: PipedConverter<boolean, number, string>
+            var pipedConverter: Converter<boolean, string>
                     = new PipedConverter(first, second);
 
             expect(pipedConverter.from(true)).to.equal('one');
@@ -40,7 +40,7 @@ module converters {
             };
             second.to.withArgs('one').returns(1);
 
-            var pipedConverter: PipedConverter<boolean, number, string>
+            var pipedConverter: Converter<boolean, string>
                     = new PipedConverter(first, second);
 
             expect(pipedConverter.to('one')).to.equal(true);
