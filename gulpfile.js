@@ -1,5 +1,7 @@
 var gulp = require('gulp');
 var typescript = require('gulp-tsc');
+var del = require('del');
+var vinylPaths = require('vinyl-paths');
 
 gulp.task('compile', function(){
   gulp.src(['src/AnotherTest.ts'])
@@ -9,13 +11,22 @@ gulp.task('compile', function(){
     .pipe(gulp.dest('dist/src'))
 });
 
-gulp.task('build-test', function(){
+gulp.task('build-test', ['clean-test'], function(){
   return gulp.src(['test/**/**.ts'])
     .pipe(typescript({
     	out: "test.js"
     }))
     .pipe(gulp.dest('dist/test'))
 });
+
+gulp.task('clean-test', function() {
+    return cleanPath('dist/test');
+});
+
+var cleanPath = function(path) {
+    return gulp.src(path, {read: false})
+        .pipe(vinylPaths(del));
+};
 
 var karma = require('gulp-karma');
 
