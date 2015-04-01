@@ -1,9 +1,9 @@
-module expanders {
+module exchangers {
 
-    export interface Exchanger<T> {
+    export interface Exchanger {
 
-        fromJson(from: Object, to: T): void;
-        toJson(to: T, from: Object): void;
+        fromJson(json: Object, subject: Object): void;
+        toJson(subject: Object, json: Object): void;
 
     }
 }

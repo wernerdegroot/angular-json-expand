@@ -4,7 +4,7 @@ var del = require('del');
 var vinylPaths = require('vinyl-paths');
 
 gulp.task('compile', function(){
-    gulp.src(['src/AnotherTest.ts'])
+    gulp.src(['src/**/*.ts'])
     .pipe(typescript({
         out: "target.js"
     }))
