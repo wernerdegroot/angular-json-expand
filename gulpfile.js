@@ -4,17 +4,17 @@ var del = require('del');
 var vinylPaths = require('vinyl-paths');
 
 gulp.task('compile', function(){
-  gulp.src(['src/AnotherTest.ts'])
+    gulp.src(['src/AnotherTest.ts'])
     .pipe(typescript({
-    	out: "target.js"
+        out: "target.js"
     }))
     .pipe(gulp.dest('dist/src'))
 });
 
 gulp.task('build-test', ['clean-test'], function(){
-  return gulp.src(['test/**/**.ts'])
+    return gulp.src(['test/**/*.ts'])
     .pipe(typescript({
-    	out: "test.js"
+        out: "test.js"
     }))
     .pipe(gulp.dest('dist/test'))
 });
@@ -25,20 +25,20 @@ gulp.task('clean-test', function() {
 
 var cleanPath = function(path) {
     return gulp.src(path, {read: false})
-        .pipe(vinylPaths(del));
+    .pipe(vinylPaths(del));
 };
 
 var karma = require('gulp-karma');
 
 var testFiles = [
-  'dist/test/*.js'
+    'dist/test/*.js'
 ];
 
 gulp.task('test', ['build-test'], function() {
-  // Be sure to return the stream
-  return gulp.src(testFiles)
+    // Be sure to return the stream
+    return gulp.src(testFiles)
     .pipe(karma({
-      configFile: 'karma.conf.js',
-      action: 'run'
+        configFile: 'karma.conf.js',
+        action: 'run'
     }));
 });
