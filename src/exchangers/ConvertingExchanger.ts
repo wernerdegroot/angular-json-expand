@@ -7,10 +7,11 @@ module exchangers {
 
     export class ConvertingExchanger<S, T> implements Exchanger {
 
-        private converter: Converter<S, T>;
-
-        constructor(converter: Converter<S, T>, private jsonPropertyName: string, private subjectPropertyName: string) {
-            this.converter = converter;
+        constructor(
+            private converter: Converter<S, T>,
+            private jsonPropertyName: string,
+            private subjectPropertyName: string) {
+            
         }
 
         fromJson(json: Object, subject: Object): void {
