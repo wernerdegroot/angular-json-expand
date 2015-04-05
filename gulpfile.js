@@ -3,6 +3,29 @@ var typescript = require('gulp-tsc');
 var del = require('del');
 var vinylPaths = require('vinyl-paths');
 
+var nodeModulesDir = 'node_modules';
+var definitelyTypedDir = nodeModulesDir + '/DefinitelyTyped';
+var definitionsDir = 'definitions';
+
+gulp.task('clean-definitions', function() {
+    return cleanPath('definitions');
+});
+
+gulp.task('copy-definitions', ['clean-definitions'], function() {
+
+    var defintionFilePattern = '/**/*.d.ts';
+
+    var filesToCopy = [
+        definitelyTypedDir + '/angularjs' + defintionFilePattern,
+        definitelyTypedDir + '/chai' + defintionFilePattern,
+        definitelyTypedDir + '/mocha' + defintionFilePattern,
+        definitelyTypedDir + '/sinon' + defintionFilePattern,
+        definitelyTypedDir + '/sinon-chai' + defintionFilePattern
+    ];
+    return gulp.src(filesToCopy, {base: definitelyTypedDir})
+            .pipe(gulp.dest(definitionsDir));
+});
+
 gulp.task('compile', function(){
     gulp.src(['src/**/*.ts'])
     .pipe(typescript({
