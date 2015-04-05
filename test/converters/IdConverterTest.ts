@@ -5,6 +5,8 @@
 
 module converters {
 
+    import IPromise = angular.IPromise;
+    import IQService = angular.IQService;
     import Repository = repositories.Repository;
     import IdSubject = subjects.IdSubject;
 
@@ -16,30 +18,59 @@ module converters {
         };
 
         var repository;
+        var q: IQService;
 
-        beforeEach(() => {
+        beforeEach(inject(($q: IQService) => {
 
             // Mock a Repository.
             repository = {
                 getById: sinon.stub()
             }
             repository.getById.withArgs(subject.id).returns(subject);
+
+            q = $q;
+        }));
+
+        it('should transform an id to a promise to a Subject by using a Repository', () => {
+
+            var idConverter = new IdConverter<number, IdSubject<number>>(q, repository);
+
+            var subjectPromise: IPromise<IdSubject<number>> = idConverter.from(subject.id);
+            subjectPromise.then((subject: IdSubject<number>) => {
+                expect(subject).to.equal(subject);
+                expect(repository.getById.calledWith(subject.id)).to.be.ok;
+            });
         });
 
-        it('should transform an id to a Subject by using a Repository', () => {
+        it('should transform a promise to an id to a promise to a Subject by using a Repository', () => {
 
-            var idConverter = new IdConverter<number, IdSubject<number>>(repository);
+            var idConverter = new IdConverter<number, IdSubject<number>>(q, repository);
 
-            expect(idConverter.from(subject.id)).to.equal(subject);
-            expect(repository.getById.calledWith(subject.id)).to.be.ok;
-
+            var subjectPromise = idConverter.from(q.when(subject.id));
+            subjectPromise.then((subject: IdSubject<number>) => {
+                expect(subject).to.equal(subject);
+                expect(repository.getById.calledWith(subject.id)).to.be.ok;
+            });
         });
 
-        it('should transform a Subject to an id by using Subject\'s id', () => {
+        it('should transform a Subject to a promise to an id by using Subject\'s id', () => {
 
-            var idConverter = new IdConverter<number, IdSubject<number>>(repository);
+            var idConverter = new IdConverter<number, IdSubject<number>>(q, repository);
 
-            expect(idConverter.to(subject)).to.equal(subject.id);
+            var idPromise: IPromise<number> = idConverter.to(subject);
+            idPromise.then((id: number) => {
+                expect(id).to.equal(subject.id);
+            });
+        });
+
+        it('should transform a promise to a Subject to a promise to an id by using Subject\'s id', () => {
+
+            var idConverter = new IdConverter<number, IdSubject<number>>(q, repository);
+
+            var idPromise: IPromise<number> = idConverter.to(q.when(subject));
+            idPromise.then((id: number) => {
+                expect(id).to.equal(subject.id);
+            });
         });
     });
 }
