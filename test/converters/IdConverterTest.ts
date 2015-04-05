@@ -38,7 +38,7 @@ module converters {
         it('should transform a Subject to an id by using Subject\'s id', () => {
 
             var idConverter = new IdConverter<number, IdSubject<number>>(repository);
-            
+
             expect(idConverter.to(subject)).to.equal(subject.id);
         });
     });

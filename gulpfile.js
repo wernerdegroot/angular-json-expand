@@ -6,9 +6,10 @@ var vinylPaths = require('vinyl-paths');
 var nodeModulesDir = 'node_modules';
 var definitelyTypedDir = nodeModulesDir + '/DefinitelyTyped';
 var definitionsDir = 'definitions';
+var libsDir = 'libs';
 
 gulp.task('clean-definitions', function() {
-    return cleanPath('definitions');
+    return cleanPath(definitionsDir);
 });
 
 gulp.task('copy-definitions', ['clean-definitions'], function() {
@@ -24,6 +25,21 @@ gulp.task('copy-definitions', ['clean-definitions'], function() {
     ];
     return gulp.src(filesToCopy, {base: definitelyTypedDir})
             .pipe(gulp.dest(definitionsDir));
+});
+
+gulp.task('clean-libs', function() {
+    return cleanPath(libsDir);
+});
+
+gulp.task('copy-libs', ['clean-libs'], function() {
+    var libsFilePattern = '/**/*.js';
+
+    var filesToCopy = [
+        nodeModulesDir + '/angular' + libsFilePattern,
+        nodeModulesDir + '/angular-mocks' + libsFilePattern
+    ];
+    return gulp.src(filesToCopy, {base: nodeModulesDir})
+            .pipe(gulp.dest(libsDir));
 });
 
 gulp.task('compile', function(){
@@ -54,6 +70,8 @@ var cleanPath = function(path) {
 var karma = require('gulp-karma');
 
 var testFiles = [
+    'libs/angular/angular.js',
+    'libs/angular-mocks/angular-mocks.js',
     'dist/test/*.js'
 ];
 
