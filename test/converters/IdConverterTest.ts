@@ -19,17 +19,24 @@ module converters {
 
         var repository;
         var q: IQService;
+        var rootScope;
 
-        beforeEach(inject(($q: IQService) => {
+        beforeEach(inject(($q: IQService, $rootScope) => {
 
             // Mock a Repository.
             repository = {
                 getById: sinon.stub()
-            }
+            };
             repository.getById.withArgs(subject.id).returns(subject);
 
+            // Services.
             q = $q;
+            rootScope = $rootScope;
         }));
+
+        afterEach(() => {
+            rootScope.$digest();
+        });
 
         it('should transform an id to a promise to a Subject by using a Repository', () => {
 

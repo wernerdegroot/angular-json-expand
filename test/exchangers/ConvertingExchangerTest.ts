@@ -4,6 +4,8 @@
 
 module exchangers {
 
+    import IPromise = angular.IPromise;
+    import IQService = angular.IQService;
     import Converter = converters.Converter;
 
     describe('ConvertingExchanger', () => {
@@ -12,17 +14,38 @@ module exchangers {
         var numberValue = 1;
         var stringValue = "one";
 
+        // Prepare promises.
+        var numberPromise: IPromise<number>;
+        var stringPromise: IPromise<string>;
+
         // Prepare mock converter.
-        var converter = {
-            from: sinon.stub(),
-            to: sinon.stub()
-        };
-        converter.from.withArgs(numberValue).returns(stringValue);
-        converter.to.withArgs(stringValue).returns(numberValue);
+        var converter;
 
         // Prepare keys.
         var jsonPropertyName = "jsonProperty";
         var subjectPropertyName = "subjectProperty";
+
+        var q: IQService;
+        var rootScope;
+
+        beforeEach(inject(($q: IQService, $rootScope) => {
+            q = $q;
+            rootScope = $rootScope;
+
+            numberPromise = q.when(numberValue);
+            stringPromise = q.when(stringValue);
+
+            converter = {
+               from: sinon.stub(),
+               to: sinon.stub()
+           };
+           converter.from.withArgs(numberValue).returns(stringPromise);
+           converter.to.withArgs(stringValue).returns(numberPromise);
+        }));
+
+        afterEach(() => {
+            rootScope.$digest();
+        })
 
         it('should call converter when transferring value from JSON to subject', () => {
 
@@ -39,11 +62,11 @@ module exchangers {
                 jsonPropertyName,
                 subjectPropertyName
             );
-            convertingExchanger.fromJson(json, subject);
 
-            // Check that the property was exchanges successfully.
-            expect(subject[subjectPropertyName]).to.equal(stringValue);
-
+            convertingExchanger.fromJson(json, subject).then(() => {
+                // Check that the property was exchanged successfully.
+                expect(subject[subjectPropertyName]).to.equal(stringValue);
+            });
         });
 
         it('should call converter when transferring value from subject to JSON', () => {
@@ -61,10 +84,11 @@ module exchangers {
                 jsonPropertyName,
                 subjectPropertyName
             );
-            convertingExchanger.toJson(subject, json);
 
-            // Check that the property was exchanges successfully.
-            expect(json[jsonPropertyName]).to.equal(numberValue);
+            convertingExchanger.toJson(subject, json).then(() => {
+                // Check that the property was exchanged successfully.
+                expect(json[jsonPropertyName]).to.equal(numberValue);
+            });
 
         });
     });

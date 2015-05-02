@@ -15,14 +15,20 @@ module converters {
     var stringPromise: IPromise<string>;
 
     var q: IQService;
+    var rootScope;
 
-    beforeEach(inject(($q: IQService) => {
+    beforeEach(inject(($q: IQService, $rootScope) => {
         q = $q;
+        rootScope = $rootScope;
 
         booleanPromise = q.when(booleanValue);
         numberPromise = q.when(numberValue);
         stringPromise = q.when(stringValue);
     }));
+
+    afterEach(() => {
+        rootScope.$digest();
+    });
 
     describe('PipedConverter', () => {
 

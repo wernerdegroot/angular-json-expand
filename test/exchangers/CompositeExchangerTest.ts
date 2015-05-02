@@ -3,6 +3,8 @@
 
 module exchangers {
 
+    import IQService = angular.IQService;
+
     describe('CompositeExchanger', () => {
 
         var firstExchanger;
@@ -15,7 +17,9 @@ module exchangers {
             subjectProperty: 'subjectValue'
         }
 
-        beforeEach(() => {
+        var q: IQService;
+
+        beforeEach(inject(($q) => {
             firstExchanger = {
                 fromJson: sinon.stub(),
                 toJson: sinon.stub()
@@ -25,11 +29,13 @@ module exchangers {
                 fromJson: sinon.stub(),
                 toJson: sinon.stub()
             };
-        });
+
+            q = $q;
+        }));
 
         it('should call each Exchanger on a call to method fromJson', () => {
 
-            var compositeExchanger: CompositeExchanger = new CompositeExchanger();
+            var compositeExchanger: CompositeExchanger = new CompositeExchanger(q);
             compositeExchanger.add(firstExchanger);
             compositeExchanger.add(secondExchanger);
 
@@ -44,7 +50,7 @@ module exchangers {
 
         it('should call each Exchanger on a call to method toJson', () => {
 
-            var compositeExchanger: CompositeExchanger = new CompositeExchanger();
+            var compositeExchanger: CompositeExchanger = new CompositeExchanger(q);
             compositeExchanger.add(firstExchanger);
             compositeExchanger.add(secondExchanger);
 
