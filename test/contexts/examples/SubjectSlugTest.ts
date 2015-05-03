@@ -1,10 +1,10 @@
 /// <reference path="../../../test/test-dependencies.ts" />
-/// <reference path="../../../src/urls/examples/Root.ts" />
-/// <reference path="../../../src/urls/examples/RootContext.ts" />
-/// <reference path="../../../src/urls/examples/Category.ts" />
-/// <reference path="../../../src/urls/examples/CategoryContext.ts" />
-/// <reference path="../../../src/urls/examples/Subject.ts" />
-/// <reference path="../../../src/urls/examples/SubjectContext.ts" />
+/// <reference path="../../../test/contexts/examples/Root.ts" />
+/// <reference path="../../../test/contexts/examples/RootContext.ts" />
+/// <reference path="../../../test/contexts/examples/Category.ts" />
+/// <reference path="../../../test/contexts/examples/CategoryContext.ts" />
+/// <reference path="../../../test/contexts/examples/Subject.ts" />
+/// <reference path="../../../test/contexts/examples/SubjectContext.ts" />
 
 module urls.examples {
 

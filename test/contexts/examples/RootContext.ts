@@ -1,4 +1,4 @@
-/// <reference path="../../../src/urls/Context.ts" />
+/// <reference path="../../../src/contexts/Context.ts" />
 
 module urls.examples {
 	

@@ -1,6 +1,6 @@
-/// <reference path="../../../src/urls/Context.ts" />
-/// <reference path="../../../src/urls/examples/CategoryContext.ts" />
-/// <reference path="../../../src/urls/examples/Category.ts" />
+/// <reference path="../../../src/contexts/Context.ts" />
+/// <reference path="../../../test/contexts/examples/CategoryContext.ts" />
+/// <reference path="../../../test/contexts/examples/Category.ts" />
 
 module urls.examples {
 	
