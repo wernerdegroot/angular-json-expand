@@ -1,4 +1,4 @@
-module urls.examples {
+module contexts.examples {
 	
 	export class Subject {
 		

@@ -1,6 +1,6 @@
 /// <reference path="../../../src/contexts/Context.ts" />
 
-module urls.examples {
+module contexts.examples {
 	
 	export class RootContext implements Context<void> {
 		

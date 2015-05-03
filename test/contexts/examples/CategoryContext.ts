@@ -2,7 +2,7 @@
 /// <reference path="../../../test/contexts/examples/RootContext.ts" />
 /// <reference path="../../../test/contexts/examples/Root.ts" />
 
-module urls.examples {
+module contexts.examples {
 	
 	export class CategoryContext implements Context<string> {
 		

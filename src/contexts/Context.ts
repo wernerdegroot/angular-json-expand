@@ -1,4 +1,4 @@
-module urls {
+module contexts {
 	
 	export interface Context<ID_TYPE> {
 		

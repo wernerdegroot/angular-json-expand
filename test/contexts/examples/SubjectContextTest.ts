@@ -6,7 +6,7 @@
 /// <reference path="../../../test/contexts/examples/Subject.ts" />
 /// <reference path="../../../test/contexts/examples/SubjectContext.ts" />
 
-module urls.examples {
+module contexts.examples {
 
     describe('SubjectContext', () => {
 
