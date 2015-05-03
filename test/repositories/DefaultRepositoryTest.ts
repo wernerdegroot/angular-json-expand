@@ -6,6 +6,7 @@ module repositories {
 	import IHttpService = angular.IHttpService;
 	import IHttpBackendService = angular.IHttpBackendService;
 	import IQService = angular.IQService;
+	import IPromise = angular.IPromise;
 	
 	describe('DefaultRepository',  () => {
 		
@@ -28,6 +29,7 @@ module repositories {
 			var expectedSubject: Object = {
 				guid: '0c8b736a1604'
 			};
+			var expectedSubjectPromise: IPromise<Object> = q.when(expectedSubject);
 			
 			// Mock a Context.
 			var context = {
@@ -40,7 +42,7 @@ module repositories {
 			var template = {
 				fromJson: sinon.stub()	
 			};
-			template.fromJson.returns(q.when(expectedSubject));
+			template.fromJson.returns(expectedSubjectPromise);
 			
 			// Mock a resource.
 			var responseData = {
@@ -56,6 +58,10 @@ module repositories {
 			var responsePromise = defaultRepository.getById(id, context, <any> template);
 			responsePromise.then((subject: Object) => {
 				expect(subject).to.equal(expectedSubject);
+				
+				// The method fromJson of Template should be called with responseData.
+				expect(template.fromJson.called).to.be.true;
+				expect(template.fromJson.firstCall.args[0]).to.eql(responseData);
 			});
 			
 			// Flush to resolve the promises and execute the expectations.
