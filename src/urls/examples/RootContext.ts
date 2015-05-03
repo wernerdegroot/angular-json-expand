@@ -6,6 +6,10 @@ module urls.examples {
 			
 		}
 		
+		getRootUrl(): string {
+			return '/api';
+		}
+		
 	}
 	
 }

@@ -1,11 +1,8 @@
 /// <reference path="../../../test/test-dependencies.ts" />
 /// <reference path="../../../src/urls/examples/Root.ts" />
-/// <reference path="../../../src/urls/examples/RootSlug.ts" />
 /// <reference path="../../../src/urls/examples/Category.ts" />
-/// <reference path="../../../src/urls/examples/CategorySlug.ts" />
 /// <reference path="../../../src/urls/examples/Subject.ts" />
 /// <reference path="../../../src/urls/examples/SubjectContext.ts" />
-/// <reference path="../../../src/urls/examples/SubjectSlug.ts" />
 
 module urls.examples {
 
@@ -19,11 +16,7 @@ module urls.examples {
             
             var subjectContext = new SubjectContext(root, category);
             
-            var rootSlug = new RootSlug();
-            var categorySlug = new CategorySlug(rootSlug);
-            var subjectSlug = new SubjectSlug(categorySlug);
-            
-            expect(subjectSlug.getUrl(subject.getId(), subjectContext)).to.equal('/api/categories/second/subjects/4');
+            expect(subjectContext.getSubjectUrl(subject.getId())).to.equal('/api/categories/second/subjects/4');
             
         });
     });

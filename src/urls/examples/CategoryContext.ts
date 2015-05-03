@@ -13,6 +13,10 @@ module urls.examples {
 			return this.root;
 		}
 		
+		getCategoryUrl(categoryId: string): string {
+			return super.getRootUrl() + '/' + 'categories' + '/' + categoryId; 
+		}
+		
 	}
 	
 }

@@ -13,6 +13,10 @@ module urls.examples {
 			return this.category;
 		}
 		
+		getSubjectUrl(subjectId: number): string {
+			return super.getCategoryUrl(this.getCategory().getId()) + '/' + 'subjects' + '/' + subjectId; 
+		}
+		
 	}
 	
 }
