@@ -10,9 +10,11 @@ module exchangers {
         var firstExchanger;
         var secondExchanger;
 
+        // Prepare JSON and subject.
         var json = {
             jsonProperty: 'jsonValue'
         };
+        
         var subject = {
             subjectProperty: 'subjectValue'
         }
