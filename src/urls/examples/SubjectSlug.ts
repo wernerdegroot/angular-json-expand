@@ -10,8 +10,8 @@ module urls.examples {
 			
 		}
 		
-		getUrl(subject: Subject, context: SubjectContext): string {
-			return this.categorySlug.getUrl(context.getCategory(), context) + '/' + 'subjects' + '/' + subject.getId(); 
+		getUrl(subjectId: number, context: SubjectContext): string {
+			return this.categorySlug.getUrl(context.getCategory().getId(), context) + '/' + 'subjects' + '/' + subjectId; 
 		}
 		
 	}

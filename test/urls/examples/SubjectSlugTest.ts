@@ -23,7 +23,7 @@ module urls.examples {
             var categorySlug = new CategorySlug(rootSlug);
             var subjectSlug = new SubjectSlug(categorySlug);
             
-            expect(subjectSlug.getUrl(subject, subjectContext)).to.equal('/api/categories/second/subjects/4');
+            expect(subjectSlug.getUrl(subject.getId(), subjectContext)).to.equal('/api/categories/second/subjects/4');
             
         });
     });
