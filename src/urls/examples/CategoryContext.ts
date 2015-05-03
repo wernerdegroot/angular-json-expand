@@ -3,10 +3,10 @@
 
 module urls.examples {
 	
-	export class CategoryContext extends RootContext {
+	export class CategoryContext {
 		
-		constructor(private root: Root) {
-			super();
+		constructor(private root: Root, private rootContext: RootContext) {
+			
 		}
 		
 		getRoot(): Root {
@@ -14,7 +14,7 @@ module urls.examples {
 		}
 		
 		getCategoryUrl(categoryId: string): string {
-			return super.getRootUrl() + '/' + 'categories' + '/' + categoryId; 
+			return this.rootContext.getRootUrl() + '/' + 'categories' + '/' + categoryId; 
 		}
 		
 	}
