@@ -6,15 +6,23 @@ module urls.examples {
 	
 	export class SubjectContext implements Context<number> {
 		
-		constructor(private category: Category, private categoryContext: CategoryContext) {
+		private static subjectSlug: string = '/subjects';
+		private subjectUrl;
+		
+		constructor(private category: Category, categoryContext: CategoryContext) {
+			this.subjectUrl = categoryContext.getSingleUrl(category.getId()) + SubjectContext.subjectSlug;
 		}
 		
 		getCategory(): Category {
 			return this.category;
 		}
 		
-		getUrl(subjectId: number): string {
-			return this.categoryContext.getUrl(this.getCategory().getId()) + '/' + 'subjects' + '/' + subjectId; 
+		getSingleUrl(subjectId: number): string {
+			return this.subjectUrl + '/' + subjectId; 
+		}
+		
+		getAllUrl(): string {
+			return this.subjectUrl;
 		}
 		
 	}

@@ -6,16 +6,23 @@ module urls.examples {
 	
 	export class CategoryContext implements Context<string> {
 		
-		constructor(private root: Root, private rootContext: RootContext) {
-			
+		private static categorySlug: string = '/categories';
+		private categoryUrl: string;
+		
+		constructor(private root: Root, rootContext: RootContext) {
+			this.categoryUrl = rootContext.getSingleUrl() + CategoryContext.categorySlug; 
 		}
 		
 		getRoot(): Root {
 			return this.root;
 		}
 		
-		getUrl(categoryId: string): string {
-			return this.rootContext.getUrl(-1) + '/' + 'categories' + '/' + categoryId; 
+		getSingleUrl(categoryId: string): string {
+			return this.categoryUrl + '/' + categoryId; 
+		}
+		
+		getAllUrl(): string {
+			return this.categoryUrl;
 		}
 		
 	}
