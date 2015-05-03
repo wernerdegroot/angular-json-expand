@@ -17,20 +17,20 @@ module converters {
     var q: IQService;
     var rootScope;
 
-    beforeEach(inject(($q: IQService, $rootScope) => {
-        q = $q;
-        rootScope = $rootScope;
-
-        booleanPromise = q.when(booleanValue);
-        numberPromise = q.when(numberValue);
-        stringPromise = q.when(stringValue);
-    }));
-
-    afterEach(() => {
-        rootScope.$digest();
-    });
-
     describe('PipedConverter', () => {
+        
+        beforeEach(inject(($q: IQService, $rootScope) => {
+            q = $q;
+            rootScope = $rootScope;
+    
+            booleanPromise = q.when(booleanValue);
+            numberPromise = q.when(numberValue);
+            stringPromise = q.when(stringValue);
+        }));
+    
+        afterEach(() => {
+            rootScope.$digest();
+        });
 
         it('should pipe output from first to second on calling method from', () => {
 
