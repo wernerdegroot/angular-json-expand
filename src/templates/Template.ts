@@ -17,22 +17,28 @@ module templates {
             this.compositeExchanger = new CompositeExchanger($q);
         }
         
-        add(exchanger: Exchanger) {
+        add(exchanger: Exchanger): Template<T> {
             this.compositeExchanger.add(exchanger);
+            return this;
         }
 
-        addAll(exchangers: Exchanger[]) {
+        addAll(exchangers: Exchanger[]): Template<T> {
             this.compositeExchanger.addAll(exchangers);
+            return this;
         }
         
-        fromJson(json: Object): IPromise<any> {
+        fromJson(json: Object): IPromise<T> {
             var subject: T = this.subjectConstructor();
-            return this.compositeExchanger.fromJson(json, subject);
+            return this.compositeExchanger.fromJson(json, subject).then(() => {
+                return subject;
+            });
         }
 
         toJson(subject: T): IPromise<any> {
             var json = {};
-            return this.compositeExchanger.toJson(subject, json);
+            return this.compositeExchanger.toJson(subject, json).then(() => {
+                return json;
+            });
         }
         
     }
