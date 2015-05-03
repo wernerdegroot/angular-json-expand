@@ -8,7 +8,7 @@
 
 module urls.examples {
 
-    describe('SubjectSlug', () => {
+    describe('SubjectContext', () => {
 
         it('should return the correct url', () => {
 
