@@ -1,9 +1,10 @@
+/// <reference path="../../../src/urls/Context.ts" />
 /// <reference path="../../../src/urls/examples/CategoryContext.ts" />
 /// <reference path="../../../src/urls/examples/Category.ts" />
 
 module urls.examples {
 	
-	export class SubjectContext {
+	export class SubjectContext implements Context<number> {
 		
 		constructor(private category: Category, private categoryContext: CategoryContext) {
 		}
@@ -12,8 +13,8 @@ module urls.examples {
 			return this.category;
 		}
 		
-		getSubjectUrl(subjectId: number): string {
-			return this.categoryContext.getCategoryUrl(this.getCategory().getId()) + '/' + 'subjects' + '/' + subjectId; 
+		getUrl(subjectId: number): string {
+			return this.categoryContext.getUrl(this.getCategory().getId()) + '/' + 'subjects' + '/' + subjectId; 
 		}
 		
 	}

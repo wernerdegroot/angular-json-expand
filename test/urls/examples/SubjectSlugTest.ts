@@ -20,7 +20,7 @@ module urls.examples {
             var categoryContext = new CategoryContext(root, rootContext);
             var subjectContext = new SubjectContext(category, categoryContext);
             
-            expect(subjectContext.getSubjectUrl(subject.getId())).to.equal('/api/categories/second/subjects/4');
+            expect(subjectContext.getUrl(subject.getId())).to.equal('/api/categories/second/subjects/4');
             
         });
     });

@@ -1,12 +1,14 @@
+/// <reference path="../../../src/urls/Context.ts" />
+
 module urls.examples {
 	
-	export class RootContext {
+	export class RootContext implements Context<number> {
 		
 		constructor() {
 			
 		}
 		
-		getRootUrl(): string {
+		getUrl(dummy: number): string {
 			return '/api';
 		}
 		
