@@ -64,7 +64,7 @@ module contexts.examples {
         it('should return the correct url', () => {
             
             var templateFactory = new TemplateFactory(q);
-            var template: Template<Object> = templateFactory.create(() => { return {}; })
+            var subjectTemplate: Template<Subject> = templateFactory.create(() => { return new Subject(); })
                 .add(new DefaultExchanger(q, 'jsonStringProperty', 'subjectStringProperty'))
                 .add(new DefaultExchanger(q, 'jsonNumberProperty', 'subjectNumberProperty'));
 
@@ -83,7 +83,7 @@ module contexts.examples {
             
             // Obtain a response through the DefaultRepository.
 			// Make sure that the response matches our expectations.
-			var responsePromise = defaultRepository.getById(subject.getId(), subjectContext, <any> template);
+			var responsePromise = defaultRepository.getById(subject.getId(), subjectContext, subjectTemplate);
 			responsePromise.then((subject: Subject) => {
 				expect(subject.subjectStringProperty).to.equal('twelve');
                 expect(subject.subjectNumberProperty).to.equal(12);
