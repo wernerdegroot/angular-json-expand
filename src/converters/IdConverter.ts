@@ -2,6 +2,8 @@
 /// <reference path="../../src/repositories/Repository.ts" />
 /// <reference path="../../src/converters/Converter.ts" />
 /// <reference path="../../src/subjects/IdSubject.ts" />
+/// <reference path="../../src/contexts/Context.ts" />
+/// <reference path="../../src/templates/Template.ts" />
 
 module converters {
 
@@ -9,21 +11,26 @@ module converters {
     import IQService = angular.IQService;
     import IdSubject = subjects.IdSubject;
     import Repository = repositories.Repository;
+    import Context = contexts.Context;
+    import Template = templates.Template;
 
-    export class IdConverter<S, T extends IdSubject<any>> implements Converter<S, T> {
+    export class IdConverter<ID_TYPE, SUBJECT_TYPE extends IdSubject<any>> implements Converter<ID_TYPE, SUBJECT_TYPE> {
 
-        constructor(private $q: IQService, private repository: Repository<S, T>) {
-
+        constructor(
+            private $q: IQService, 
+            private repository: Repository<ID_TYPE, SUBJECT_TYPE>,
+            private context: Context<ID_TYPE>,
+            private template: Template<SUBJECT_TYPE>) {
         }
 
-        from(id: IPromise<S>|S): IPromise<T> {
-            var idPromise: IPromise<S> = this.$q.when(id);
-            return idPromise.then((id: S) => this.repository.getById(id));
+        from(id: IPromise<ID_TYPE>|ID_TYPE): IPromise<SUBJECT_TYPE> {
+            var idPromise: IPromise<ID_TYPE> = this.$q.when(id);
+            return idPromise.then((id: ID_TYPE) => this.repository.getById(id, this.context, this.template));
         }
 
-        to(subject: IPromise<T>|T): IPromise<S> {
+        to(subject: IPromise<SUBJECT_TYPE>|SUBJECT_TYPE): IPromise<ID_TYPE> {
             var subjectPromise = this.$q.when(subject);
-            return subjectPromise.then((subject: T) => subject.id)
+            return subjectPromise.then((subject: SUBJECT_TYPE) => subject.id)
         }
     }
 }

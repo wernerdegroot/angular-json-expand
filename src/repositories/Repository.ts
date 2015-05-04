@@ -1,14 +1,20 @@
 /// <reference path="../../src/dependencies.ts" />
 /// <reference path="../../src/subjects/IdSubject.ts" />
+/// <reference path="../../src/contexts/Context.ts" />
+/// <reference path="../../src/templates/Template.ts" />
 
 module repositories {
 
     import IPromise = angular.IPromise;
     import IdSubject = subjects.IdSubject;
+    import Context = contexts.Context;
+    import Template = templates.Template;
 
-    export interface Repository<S, T extends IdSubject<any>> {
+    export interface Repository<ID_TYPE, SUBJECT_TYPE extends IdSubject<any>> {
 
-        getById(id: S): IPromise<T>;
+        getById(id: ID_TYPE, context: Context<ID_TYPE>, template: Template<SUBJECT_TYPE>): IPromise<SUBJECT_TYPE>;
+        
+        getAll(context: Context<ID_TYPE>, template: Template<SUBJECT_TYPE>): IPromise<SUBJECT_TYPE[]>;
 
     }
 }

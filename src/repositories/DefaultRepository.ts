@@ -16,7 +16,7 @@ module repositories {
 	import IHttpPromiseCallbackArg = angular.IHttpPromiseCallbackArg;
 	import IQService = angular.IQService;
 	
-	export class DefaultRepository<ID_TYPE, SUBJECT_TYPE extends IdSubject<any>> /*implements Repository<ID_TYPE, SUBJECT_TYPE>*/ {
+	export class DefaultRepository<ID_TYPE, SUBJECT_TYPE extends IdSubject<any>> implements Repository<ID_TYPE, SUBJECT_TYPE> {
 		
 		constructor(private $http: IHttpService, private $q: IQService) {
 			
