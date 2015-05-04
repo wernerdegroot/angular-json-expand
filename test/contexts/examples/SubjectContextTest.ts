@@ -84,9 +84,9 @@ module contexts.examples {
             // Obtain a response through the DefaultRepository.
 			// Make sure that the response matches our expectations.
 			var responsePromise = defaultRepository.getById(subject.getId(), subjectContext, <any> template);
-			responsePromise.then((subject: Object) => {
-				expect(subject['subjectStringProperty']).to.equal('twelve');
-                expect(subject['subjectNumberProperty']).to.equal(12);
+			responsePromise.then((subject: Subject) => {
+				expect(subject.subjectStringProperty).to.equal('twelve');
+                expect(subject.subjectNumberProperty).to.equal(12);
 			});
         });
     });
