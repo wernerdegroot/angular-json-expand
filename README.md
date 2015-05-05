@@ -8,7 +8,7 @@ Suppose we have a JSON object representing a employee working at Acme Corporatio
 
 ```json
 {
-    "id": 14,
+    "id": "rudolph",
     "first-name": "Rudolph",
     "last-name": "le Grand"
 }
