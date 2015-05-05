@@ -1,7 +1,7 @@
 /// <reference path="../../src/dependencies.ts" />
 /// <reference path="../../src/dependencies.ts" />
 /// <reference path="../../src/subjects/IdSubject.ts" />
-/// <reference path="../../src/contexts/Context.ts" />
+/// <reference path="../../src/resourcelocations/ResourceLocation.ts" />
 /// <reference path="../../src/templates/Template.ts" />
 
 module dataservices {
@@ -10,7 +10,7 @@ module dataservices {
 	import IHttpPromise = angular.IHttpPromise;
 	import IdSubject = subjects.IdSubject;
 	import IHttpService = angular.IHttpService;
-	import Context = contexts.Context;
+	import ResourceLocation = resourcelocations.ResourceLocation;
 	import Template = templates.Template;
 	import IHttpPromiseCallbackArg = angular.IHttpPromiseCallbackArg;
 	import IQService = angular.IQService;
@@ -26,8 +26,8 @@ module dataservices {
 			private $q: IQService) {
 		}
 		
-		getById(id: ID_TYPE, context: Context<ID_TYPE>, template: Template<SUBJECT_TYPE>): IPromise<SUBJECT_TYPE> {
-			var subjectUrl: string = context.getSingleUrl(id);
+		getById(id: ID_TYPE, resourceLocation: ResourceLocation<ID_TYPE>, template: Template<SUBJECT_TYPE>): IPromise<SUBJECT_TYPE> {
+			var subjectUrl: string = resourceLocation.getSingleUrl(id);
 			var responsePromise: IHttpPromise<Object> = this.$http.get<Object>(subjectUrl);
 			var responseHandler = (response: IHttpPromiseCallbackArg<Object>) => {
 				return template.fromJson(response.data);
@@ -36,11 +36,11 @@ module dataservices {
 			return responsePromise.then(responseHandler);
 		}
 		
-		getAll(context: Context<ID_TYPE>, template: Template<SUBJECT_TYPE>): IPromise<SUBJECT_TYPE[]> {
+		getAll(resourceLocation: ResourceLocation<ID_TYPE>, template: Template<SUBJECT_TYPE>): IPromise<SUBJECT_TYPE[]> {
 			
 			var self = this;
 			
-			var allUrl: string = context.getAllUrl();
+			var allUrl: string = resourceLocation.getAllUrl();
 			var responsePromise = this.$http.get<Object[]>(allUrl);
 			var responseHandler = (response: IHttpPromiseCallbackArg<Object[]>) => {
 				var jsonPromises: IPromise<SUBJECT_TYPE>[] 

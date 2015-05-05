@@ -34,57 +34,55 @@ This way, we can access all Rudolph's attributes and even retrieve his full name
 
 ### URL hierarchy
 
-First, let's configure the URL hierarchy. We create a corresponding hierarchy of context objects for this. Given **RootContext.js**
+First, let's configure the URL hierarchy. We create a corresponding hierarchy of resource location objects for this. Given **ResourceRoot.js**
 
 ```javascript
 // Determine the root of the server.
-var RootContext = function () {
+var ResourceRoot = function () {
     this.rootUrl = 'http://localhost:8000/api';    
 };
 
-RootContext.prototype.getSingleUrl = function () {
+ResourceRoot.prototype.getSingleUrl = function () {
     return this.rootUrl;
 };
 
-RootContext.prototype.getAllUrl = function () {
+ResourceRoot.prototype.getAllUrl = function () {
     return this.rootUrl;
 };
 ```
 
-and **CompanyContext.js**
+and **CompanyResourceLocation.js**
 
 ```javascript
-
 // Determine the URL of the resource containing companies.
-// Use a RootContext to build on.
-var CompanyContext = function (rootContext) {
-    this.companyUrl = this.rootContext.getAllUrl() + '/companies';
+// Use a ResourceRoot to build on.
+var ResourceRoot = function () {
+    this.rootUrl = 'http://localhost:8000/api';    
 };
 
-CompanyContext.prototype.getSingleUrl = function (id) {
-    return this.companyUrl + '/' + id;
+ResourceRoot.prototype.getSingleUrl = function () {
+    return this.rootUrl;
 };
 
-CompanyContext.prototype.getAllUrl = function () {
-    return this.companyUrl;
+ResourceRoot.prototype.getAllUrl = function () {
+    return this.rootUrl;
 };
 ```
 
-and **EmployeeContext.js**
+and **EmployeeResourceLocation.js**
 
 ```javascript
-
 // Determine the URL of the resource containing employees.
-// Use a CompanyContext to build on.
-var EmployeeContext = function (companyId, companyContext) {
-    this.employeeUrl = this.companyContext.getSingleUrl(companyId) + '/employees';
+// Use a CompanyResourceLocation to build on.
+var EmployeeResourceLocation = function (companyId, companyResourceLocation) {
+    this.employeeUrl = companyResourceLocation.getSingleUrl(companyId) + '/employees';
 };
 
-EmployeeContext.prototype.getSingleUrl = function (id) {
+EmployeeResourceLocation.prototype.getSingleUrl = function (id) {
     return this.employeeUrl + '/' + id;
 };
 
-EmployeeContext.prototype.getAllUrl = function () {
+EmployeeResourceLocation.prototype.getAllUrl = function () {
     return this.employeeUrl;
 };
 ```
@@ -92,20 +90,20 @@ EmployeeContext.prototype.getAllUrl = function () {
 we can determine the URL at which the JSON representation of Rudolph lives:
 
 ```javascript
-var rootContext = new RootContext();
-var companyContext = new CompanyContext(rootContext);
-var acmeEmployeeContext = new EmployeeContext('acme', companyContext);
-var rudolphUrl = acmeEmployeeContext.getSingleUrl('rudolph');
+var resourceRoot = new ResourceRoot();
+var companyResourceLocation = new CompanyResourceLocation(resourceRoot);
+var acmeEmployeeResourceLocation = new EmployeeResourceLocation('acme', companyResourceLocation);
+var rudolphUrl = acmeEmployeeResourceLocation.getSingleUrl('rudolph');
 ```
 
-In order for *angular-json-expand* to be able to use a context object, a context object must have at least the following two methods:
+In order for *angular-json-expand* to be able to use a resource location object, a resource location object must have at least the following two methods:
 
  1. `getSingleUrl` which takes an `id` and produces the URL where the JSON object with the given id lives
  2. `getAllUrl` which produces the URL at which all JSON objects of this type can be found
 
 ### JSON definition
 
-Just like a context object defines where a certain JSON object lives, a template object defines what the JSON object looks like and how it should be converted to a full-fledged domain object. The following service is defined in **EmployeeRepository.js**:
+Just like a resource location object defines where a certain JSON object lives, a template object defines what the JSON object looks like and how it should be converted to a full-fledged domain object. The following service is defined in **EmployeeRepository.js**:
 
 ```javascript
 
@@ -139,22 +137,21 @@ The `EmployeeRepository` service is based on a more general `Repository` which w
 
 ### Using our repository
 
-Getting a `Employee` from the server is laughably simple. Simply create Rudolph's context, as before, and invoke our repository!
+Getting a `Employee` from the server is laughably simple. Simply create Rudolph's resource location object, as before, and invoke our repository!
 
 ```javascript
-var rootContext = new RootContext();
-var companyContext = new CompanyContext(rootContext);
-var acmeEmployeeContext = new EmployeeContext('acme', companyContext);
+var resourceRoot = new ResourceRoot();
+var companyResourceLocation = new CompanyResourceLocation(resourceRoot);
+var acmeEmployeeResourceLocation = new EmployeeResourceLocation('acme', companyResourceLocation);
 
 // Obtain Rudolph.
-var rudolphPromise = employeeRepository.getById('rudolph', acmeEmployeeContext);
+var rudolphPromise = employeeRepository.getById('rudolph', acmeEmployeeResourceLocation);
 rudolphPromise.then(function (rudolph) {
 	console.info('Hello, ' + rudolph.getFullName() + '!');
 });
 
 // Try to obtain a non-existing employee (which, of course, will fail).
-var nonExistingEmployeePromise 
-	= employeeRepository.getById('does-not-exist', acmeEmployeeContext);
+var nonExistingEmployeePromise = employeeRepository.getById('does-not-exist', acmeEmployeeResourceLocation);
 nonExistingEmployeePromise.catch(function () {
 	console.error('An error occurred when fetching a non-existing employee!')
 });

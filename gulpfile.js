@@ -76,8 +76,8 @@ var cleanPath = function(path) {
 var karma = require('gulp-karma');
 
 var testFiles = [
-    'libs/angular/angular.js',
-    'libs/angular-mocks/angular-mocks.js',
+    'node_modules/angular/angular.js',
+    'node_modules/angular-mocks/angular-mocks.js',
     'dist/test/*.js'
 ];
 
