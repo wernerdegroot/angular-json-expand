@@ -1,5 +1,6 @@
 /// <reference path="../test-dependencies.ts" />
 /// <reference path="../../src/dataservices/DataService.ts" />
+/// <reference path="../../test/dataservices/MyDomainObject.ts" />
 
 module dataservices {
 	
@@ -16,43 +17,40 @@ module dataservices {
 		var secondDomainObject: Object;
 		var firstDomainObjectPromise: IPromise<Object>;
 		var secondDomainObjectPromise: IPromise<Object>;
-		var someJson: Object;
-		var anotherJson: Object;
-		var someJsonResponsePromise: IPromise<Object>;
+		var firstJson: Object;
+		var secondJson: Object;
+		var firstJsonResponsePromise: IPromise<Object>;
 		var allJsonResponsePromise: IPromise<Object>;
 		var errorResponsePromise: IPromise<Object>;
 		var singleUrl: string;
 		var allUrl: string;
 		var errorUrl: string;
 		var resourceLocation;
+		var resourceLocationWithError;
+		var objectMapper;
 		var id: number = 42;
+		
+		var createMockObject = (guid: string) => {
+			return {
+				guid: guid
+			};
+		};
 		
 		beforeEach(inject(($q: IQService, $rootScope: IRootScopeService) => {
 			q = $q;
 			rootScope = $rootScope;
 			
 			// Mock domain objects.
-			firstDomainObject = {
-				guid: '0c8b736a1604'
-			};
+			firstDomainObject = createMockObject('0c8b736a1604');
 			firstDomainObjectPromise = q.when(firstDomainObject);
-			
-			secondDomainObject = {
-				guid: '20442b443f9d'
-			};
+			secondDomainObject = createMockObject('20442b443f9d');
 			secondDomainObjectPromise = q.when(secondDomainObject);
 			
-			// Mock JSON-objects.
-			someJson = {
-				guid: '7bf39e45713b'	
-			};
-			someJsonResponsePromise = q.when({data: someJson});
-			
-			anotherJson = {
-				guid: 'f9f5b3799488'
-			}
-			allJsonResponsePromise = q.when({data: [someJson, anotherJson]});
-			
+			// Mock responses.
+			firstJson = createMockObject('7bf39e45713b');
+			firstJsonResponsePromise = q.when({data: firstJson});
+			secondJson = createMockObject('f9f5b3799488');
+			allJsonResponsePromise = q.when({data: [firstJson, secondJson]});
 			errorResponsePromise = q.reject();
 			
 			// Some URL's.
@@ -64,7 +62,7 @@ module dataservices {
 			http = {
 				get: sinon.stub()	
 			};
-			http.get.withArgs(singleUrl).returns(someJsonResponsePromise);
+			http.get.withArgs(singleUrl).returns(firstJsonResponsePromise);
 			http.get.withArgs(allUrl).returns(allJsonResponsePromise);
 			http.get.withArgs(errorUrl).returns(errorResponsePromise);
 			
@@ -75,6 +73,19 @@ module dataservices {
             };
 			resourceLocation.getSingleUrl.withArgs(id).returns(singleUrl);
 			resourceLocation.getAllUrl.returns(allUrl);
+			
+			// Mock a ResourceLocation that returns an URL at which an error will be generated.
+			resourceLocationWithError = {
+				getSingleUrl: sinon.stub(),
+				getAllUrl: sinon.stub()	
+			};
+			resourceLocationWithError.getAllUrl.returns(errorUrl);
+			resourceLocationWithError.getSingleUrl.returns(errorUrl);
+			
+			// Mock an ObjectMapper.
+			objectMapper = {
+				fromJson: sinon.stub()	
+			};
 		}));
 		
 		afterEach(() => {
@@ -83,14 +94,10 @@ module dataservices {
 		
 		it('should return a promise to a JSON-object when getById is called', () => {
 			
-			// Mock an ObjectMapper.
-			var objectMapper = {
-				fromJson: sinon.stub()	
-			};
-			objectMapper.fromJson.withArgs(someJson).returns(firstDomainObjectPromise);
+			objectMapper.fromJson.withArgs(firstJson).returns(firstDomainObjectPromise);
 			
 			// Construct a DataService.
-			var dataService: DataService<number, any> = new DataService<number, any>(http, q);
+			var dataService: DataService<number, MyDomainObject> = new DataService<number, MyDomainObject>(http, q);
 			
 			// Obtain a response through the DataService.
 			// Make sure that the response matches our expectations.
@@ -102,45 +109,25 @@ module dataservices {
 		
 		it('should return a rejected promise when getById is called but the server returns an error', () => {
 			
-			// Mock a ResourceLocation that returns an URL at which an error will be generated.
-			var resourceLocationWithError = {
-				getSingleUrl: sinon.stub(),
-				getAllUrl: sinon.stub()	
-			};
-			resourceLocationWithError.getSingleUrl.returns(errorUrl);
-			
-			// Mock an ObjectMapper.
-			var objectMapper = {
-				fromJson: sinon.stub()	
-			};
-			
 			// Construct a DataService.
-			var dataService: DataService<number, any> = new DataService<number, any>(http, q);
+			var dataService: DataService<number, MyDomainObject> = new DataService<number, MyDomainObject>(http, q);
 			
 			// Obtain a response through the DataService.
 			var responsePromise = dataService.getById(id, resourceLocationWithError, <any> objectMapper);
-			
-			var errorRaised: boolean = false;
-			responsePromise.catch(() => {
-				errorRaised = true;
+			console.log(responsePromise);
+			responsePromise.then(function () {
+				// Fail the test when te promise is succesfully resolved.
+				expect(true).to.be.false; 
 			});
-			
-			expect(errorRaised).to.be.false;
-			rootScope.$digest(); // Resolve promises.
-			expect(errorRaised).to.be.true;
 		});
 		
 		it('should return a promise to a JSON-object when getAll is called', () => {
 			
-			// Mock an ObjectMapper.
-			var objectMapper = {
-				fromJson: sinon.stub()	
-			};
-			objectMapper.fromJson.withArgs(someJson).returns(firstDomainObjectPromise);
-			objectMapper.fromJson.withArgs(anotherJson).returns(secondDomainObjectPromise);
+			objectMapper.fromJson.withArgs(firstJson).returns(firstDomainObjectPromise);
+			objectMapper.fromJson.withArgs(secondJson).returns(secondDomainObjectPromise);
 			
 			// Construct a DataService.
-			var dataService: DataService<number, any> = new DataService<number, any>(http, q);
+			var dataService: DataService<number, MyDomainObject> = new DataService<number, MyDomainObject>(http, q);
 			
 			// Obtain a response through the DataService.
 			// Make sure that the response matches our expectations.
@@ -153,32 +140,16 @@ module dataservices {
 		
 		it('should return a rejected promise when getAll is called but the server returns an error', () => {
 			
-			// Mock a ResourceLocation that returns an URL at which an error will be generated.
-			var resourceLocationWithError = {
-				getSingleUrl: sinon.stub(),
-				getAllUrl: sinon.stub()	
-			};
-			resourceLocationWithError.getAllUrl.returns(errorUrl);
-			
-			// Mock an ObjectMapper.
-			var objectMapper = {
-				fromJson: sinon.stub()	
-			};
-			
 			// Construct a DataService.
-			var dataService: DataService<number, any> = new DataService<number, any>(http, q);
+			var dataService: DataService<number, MyDomainObject> = new DataService<number, MyDomainObject>(http, q);
 			
 			// Obtain a response through the DataService.
 			var responsePromise = dataService.getAll(resourceLocationWithError, <any> objectMapper);
 			
-			var errorRaised: boolean = false;
-			responsePromise.catch(() => {
-				errorRaised = true;
+			responsePromise.then(function () {
+				// Fail the test when te promise is succesfully resolved.
+				expect(true).to.be.false; 
 			});
-			
-			expect(errorRaised).to.be.false;
-			rootScope.$digest(); // Resolve promises.
-			expect(errorRaised).to.be.true;
 		});
 				
 	});
