@@ -103,26 +103,27 @@ In order for *angular-json-expand* to be able to use a resource location object,
 
 ### JSON definition
 
-Just like a resource location object defines where a certain JSON object lives, a template object defines what the JSON object looks like and how it should be converted to a full-fledged domain object. The following service is defined in **EmployeeRepository.js**:
+Just like a resource location object defines where a certain JSON object lives, an object mapper defines what the JSON object looks like and how it should be converted to a full-fledged domain object. The following service is defined in **EmployeeRepository.js**:
 
 ```javascript
-
-var EmployeeRepository = function (templateFactory) {
-    this.employeeTemplate = templateFactory.create(Employee.createEmpty)
-        .defaultConverter('id', 'id')
-        .defaultConverter('first-name', 'firstName')
-        .defaultConverter('last-name', 'lastName');
+var EmployeeRepository = function (objectMapperFactory, dataService) {
+    
+    repositories.DefaultRepository.call(this, dataService);
+    
+    this.employeeObjectMapper = objectMapperFactory.create(Employee.createEmpty)
+        .defaultExchanger('id', 'id')
+        .defaultExchanger('first-name', 'firstName')
+        .defaultExchanger('last-name', 'lastName');
 };
 
-EmployeeRepository.prototype = Object.create(Repository.prototype);
+EmployeeRepository.prototype = Object.create(repositories.DefaultRepository.prototype);
 EmployeeRepository.prototype.constructor = EmployeeRepository;
 
-EmployeeRepository.prototype.getTemplate = function () {
-    return this.employeeTemplate;
+EmployeeRepository.prototype.getObjectMapper = function () {
+    return this.employeeObjectMapper;
 };
-
 ```
-Using an injected `templateFactory` we create a new template object by passing it a means to construct an empty `Employee` object. The function `Employee.createEmpty` is defined as follows
+Using an injected `objectMapperFactory` we create a new object mapper by passing it a means to construct an empty `Employee` object. The function `Employee.createEmpty` is defined as follows
 
 ```javascript
 // Create an empty Employee (with the name John Doe).
@@ -133,7 +134,7 @@ Employee.createEmpty = function () {
 
 We also configure three default exchangers which, as you can probably guess, are used to transform JSON objects to domain objects and vice versa. We'll encounter several more exchangers in subsequent examples.
 
-The `EmployeeRepository` service is based on a more general `Repository` which will allow us to retrieve a fully functioning `Employee` from the server. In order to provide this repository with a means to access our template object, the method `getTemplate` (which, of course, should return a template) is mandatory.
+The `EmployeeRepository` service is based on a more general `Repository` which will allow us to retrieve a fully functioning `Employee` from the server. In order to provide this repository with a means to access our object mapper, the method `getObjectMapper` (which, of course, should return an object mapper) is mandatory.
 
 ### Using our repository
 
@@ -157,7 +158,7 @@ nonExistingEmployeePromise.catch(function () {
 });
 ```
 
-In this example, we assume that a `EmployeeRepository` can be injected as `employeeRepository`.  This example can be found in the examples directory.
+In this example, we assume that a `EmployeeRepository` can be injected as `employeeRepository`.  This example can also be found in the examples directory.
 
 ## A more interesting example
 

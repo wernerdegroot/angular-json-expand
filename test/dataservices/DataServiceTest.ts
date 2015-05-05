@@ -83,18 +83,18 @@ module dataservices {
 		
 		it('should return a promise to a JSON-object when getById is called', () => {
 			
-			// Mock a Template.
-			var template = {
+			// Mock an ObjectMapper.
+			var objectMapper = {
 				fromJson: sinon.stub()	
 			};
-			template.fromJson.withArgs(someJson).returns(firstDomainObjectPromise);
+			objectMapper.fromJson.withArgs(someJson).returns(firstDomainObjectPromise);
 			
 			// Construct a DataService.
 			var dataService: DataService<number, any> = new DataService<number, any>(http, q);
 			
 			// Obtain a response through the DataService.
 			// Make sure that the response matches our expectations.
-			var responsePromise = dataService.getById(id, resourceLocation, <any> template);
+			var responsePromise = dataService.getById(id, resourceLocation, <any> objectMapper);
 			responsePromise.then((domainObject: Object) => {
 				expect(domainObject).to.equal(firstDomainObject);
 			});
@@ -109,8 +109,8 @@ module dataservices {
 			};
 			resourceLocationWithError.getSingleUrl.returns(errorUrl);
 			
-			// Mock a Template.
-			var template = {
+			// Mock an ObjectMapper.
+			var objectMapper = {
 				fromJson: sinon.stub()	
 			};
 			
@@ -118,7 +118,7 @@ module dataservices {
 			var dataService: DataService<number, any> = new DataService<number, any>(http, q);
 			
 			// Obtain a response through the DataService.
-			var responsePromise = dataService.getById(id, resourceLocationWithError, <any> template);
+			var responsePromise = dataService.getById(id, resourceLocationWithError, <any> objectMapper);
 			
 			var errorRaised: boolean = false;
 			responsePromise.catch(() => {
@@ -132,19 +132,19 @@ module dataservices {
 		
 		it('should return a promise to a JSON-object when getAll is called', () => {
 			
-			// Mock a Template.
-			var template = {
+			// Mock an ObjectMapper.
+			var objectMapper = {
 				fromJson: sinon.stub()	
 			};
-			template.fromJson.withArgs(someJson).returns(firstDomainObjectPromise);
-			template.fromJson.withArgs(anotherJson).returns(secondDomainObjectPromise);
+			objectMapper.fromJson.withArgs(someJson).returns(firstDomainObjectPromise);
+			objectMapper.fromJson.withArgs(anotherJson).returns(secondDomainObjectPromise);
 			
 			// Construct a DataService.
 			var dataService: DataService<number, any> = new DataService<number, any>(http, q);
 			
 			// Obtain a response through the DataService.
 			// Make sure that the response matches our expectations.
-			var responsePromise = dataService.getAll(resourceLocation, <any> template);
+			var responsePromise = dataService.getAll(resourceLocation, <any> objectMapper);
 			responsePromise.then((domainObjects: Object[]) => {
 				expect(domainObjects[0]).to.equal(firstDomainObject);
 				expect(domainObjects[1]).to.equal(secondDomainObject);
@@ -160,8 +160,8 @@ module dataservices {
 			};
 			resourceLocationWithError.getAllUrl.returns(errorUrl);
 			
-			// Mock a Template.
-			var template = {
+			// Mock an ObjectMapper.
+			var objectMapper = {
 				fromJson: sinon.stub()	
 			};
 			
@@ -169,7 +169,7 @@ module dataservices {
 			var dataService: DataService<number, any> = new DataService<number, any>(http, q);
 			
 			// Obtain a response through the DataService.
-			var responsePromise = dataService.getAll(resourceLocationWithError, <any> template);
+			var responsePromise = dataService.getAll(resourceLocationWithError, <any> objectMapper);
 			
 			var errorRaised: boolean = false;
 			responsePromise.catch(() => {

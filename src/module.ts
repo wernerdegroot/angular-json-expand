@@ -1,13 +1,13 @@
 /// <reference path="../src/dependencies.ts" />
 /// <reference path="../src/dataservices/DataService.ts" />
-/// <reference path="../src/templates/TemplateFactory.ts" />
+/// <reference path="../src/objectmappers/ObjectMapperFactory.ts" />
 
 import IModule = angular.IModule;
 import DataService = dataservices.DataService;
-import TemplateFactory = templates.TemplateFactory;
+import ObjectMapperFactory = objectmappers.ObjectMapperFactory;
 
 var module: IModule = angular.module('angularJsonExpand', [])
 
 	.service(DataService.injectAs, DataService)
 	
-	.service(TemplateFactory.injectAs, TemplateFactory);
+	.service(ObjectMapperFactory.injectAs, ObjectMapperFactory);

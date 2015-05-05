@@ -3,7 +3,7 @@
 /// <reference path="../../src/exchangers/Exchanger.ts" />
 /// <reference path="../../src/exchangers/DefaultExchanger.ts" />
 
-module templates {
+module objectmappers {
     
     import CompositeExchanger = exchangers.CompositeExchanger;
     import Exchanger = exchangers.Exchanger;
@@ -11,7 +11,7 @@ module templates {
     import IQService = angular.IQService;
     import IPromise = angular.IPromise;
     
-    export class Template<T> {
+    export class ObjectMapper<T> {
         
         private compositeExchanger: CompositeExchanger;
 
@@ -19,11 +19,11 @@ module templates {
             this.compositeExchanger = new CompositeExchanger($q);
         }
         
-        defaultExchanger(jsonPropertyName: string, domainObjectPropertyName: string): Template<T> {
+        defaultExchanger(jsonPropertyName: string, domainObjectPropertyName: string): ObjectMapper<T> {
             return this.add(new DefaultExchanger(this.$q, jsonPropertyName, domainObjectPropertyName));
         }
         
-        add(exchanger: Exchanger): Template<T> {
+        add(exchanger: Exchanger): ObjectMapper<T> {
             this.compositeExchanger.add(exchanger);
             return this;
         }

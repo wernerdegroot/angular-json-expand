@@ -1,16 +1,16 @@
 /// <reference path="../../test/test-dependencies.ts" />
-/// <reference path="../../src/templates/Template.ts" />
-/// <reference path="../../src/templates/TemplateFactory.ts" />
+/// <reference path="../../src/objectmappers/ObjectMapper.ts" />
+/// <reference path="../../src/objectmappers/ObjectMapperFactory.ts" />
 /// <reference path="../../src/exchangers/DefaultExchanger.ts" />
 
-module templates {
+module objectmappers {
 
     import IPromise = angular.IPromise;
     import IQService = angular.IQService;
     import IRootScopeService = angular.IRootScopeService;
     import DefaultExchanger = exchangers.DefaultExchanger;
 
-    describe('Template', () => {
+    describe('ObjectMapper', () => {
 
         var q: IQService;
         var rootScope: IRootScopeService;
@@ -41,12 +41,12 @@ module templates {
             var emptyDomainObject: Object = {};
             var domainObjectConstructor: () => Object = () => emptyDomainObject;
             
-            var templateFactory = new TemplateFactory(q);
-            var template: Template<Object> = templateFactory.create(domainObjectConstructor)
+            var objectMapperFactory = new ObjectMapperFactory(q);
+            var objectMapper: ObjectMapper<Object> = objectMapperFactory.create(domainObjectConstructor)
                 .add(new DefaultExchanger(q, jsonStringValueProperty, domainObjectStringValueProperty))
                 .add(new DefaultExchanger(q, jsonNumberValueProperty, domainObjectNumberValueProperty));
                     
-            var domainObjectPromise = template.fromJson(json);
+            var domainObjectPromise = objectMapper.fromJson(json);
             domainObjectPromise.then((domainObject: Object) => {
                 // DomainObject should be identical to the emptyDomainObject which
                 // should both be enriched with exchanged data.
@@ -64,12 +64,12 @@ module templates {
             
             var domainObjectConstructor = sinon.stub();
             
-            var templateFactory = new TemplateFactory(q);
-            var template: Template<Object> = templateFactory.create(domainObjectConstructor)
+            var objectMapperFactory = new ObjectMapperFactory(q);
+            var objectMapper: ObjectMapper<Object> = objectMapperFactory.create(domainObjectConstructor)
                 .add(new DefaultExchanger(q, jsonStringValueProperty, domainObjectStringValueProperty))
                 .add(new DefaultExchanger(q, jsonNumberValueProperty, domainObjectNumberValueProperty));
                     
-            var jsonPromise = template.toJson(domainObject);
+            var jsonPromise = objectMapper.toJson(domainObject);
             jsonPromise.then((json: Object) => {
                 expect(json[jsonStringValueProperty]).to.equal(stringValue);
                 expect(json[jsonNumberValueProperty]).to.equal(numberValue);
