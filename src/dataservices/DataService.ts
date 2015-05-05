@@ -17,6 +17,8 @@ module dataservices {
 	
 	export class DataService<ID_TYPE, SUBJECT_TYPE extends IdSubject<any>> {
 		
+		static injectAs: string = 'dataService';
+		
 		constructor(private $http: IHttpService, private $q: IQService) {
 			
 		}

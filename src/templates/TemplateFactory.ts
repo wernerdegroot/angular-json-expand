@@ -7,6 +7,8 @@ module templates {
     
     export class TemplateFactory {
         
+        static injectAs: string = 'templateFactory';
+        
         constructor(private $q: IQService) {
         }
         

@@ -1,11 +1,13 @@
 /// <reference path="../../src/dependencies.ts" />
 /// <reference path="../../src/exchangers/CompositeExchanger.ts" />
 /// <reference path="../../src/exchangers/Exchanger.ts" />
+/// <reference path="../../src/exchangers/DefaultExchanger.ts" />
 
 module templates {
     
     import CompositeExchanger = exchangers.CompositeExchanger;
     import Exchanger = exchangers.Exchanger;
+    import DefaultExchanger = exchangers.DefaultExchanger;
     import IQService = angular.IQService;
     import IPromise = angular.IPromise;
     
@@ -15,6 +17,10 @@ module templates {
 
         constructor(private $q: IQService, private subjectConstructor: () => T) {
             this.compositeExchanger = new CompositeExchanger($q);
+        }
+        
+        defaultExchanger(jsonPropertyName: string, subjectPropertyName: string): Template<T> {
+            return this.add(new DefaultExchanger(this.$q, jsonPropertyName, subjectPropertyName));
         }
         
         add(exchanger: Exchanger): Template<T> {

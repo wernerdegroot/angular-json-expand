@@ -2,6 +2,7 @@ var gulp = require('gulp');
 var typescript = require('gulp-tsc');
 var del = require('del');
 var vinylPaths = require('vinyl-paths');
+var webserver = require('gulp-webserver');
 
 var nodeModulesDir = 'node_modules';
 var definitelyTypedDir = nodeModulesDir + '/DefinitelyTyped';
@@ -10,6 +11,15 @@ var libsDir = 'libs';
 
 gulp.task('clean-definitions', function() {
     return cleanPath(definitionsDir);
+});
+
+gulp.task('webserver', function() {
+    gulp.src('.')
+        .pipe(webserver({
+            livereload: true,
+            directoryListing: true,
+            open: true
+        }));
 });
 
 gulp.task('copy-definitions', ['clean-definitions'], function() {
@@ -45,7 +55,7 @@ gulp.task('copy-libs', ['clean-libs'], function() {
 gulp.task('compile', function(){
     gulp.src(['src/**/*.ts'])
     .pipe(typescript({
-        out: "target.js"
+        out: "angular-json-expand.js"
     }))
     .pipe(gulp.dest('dist/src'))
 });
