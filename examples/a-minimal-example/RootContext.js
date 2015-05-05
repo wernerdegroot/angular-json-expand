@@ -1,5 +1,5 @@
 var RootContext = function () {
-    this.rootUrl = 'http://localhost:8000/examples/a-minimal-example/api';    
+    this.rootUrl = 'http://localhost:8000/api';    
 };
 
 RootContext.prototype.getSingleUrl = function () {

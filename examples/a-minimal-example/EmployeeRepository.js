@@ -2,7 +2,7 @@ var EmployeeRepository = function (templateFactory, dataService) {
     
     repositories.DefaultRepository.call(this, dataService);
     
-    this.employeeTemplate = templateFactory.create(function() { return Object.create(Employee.prototype); })
+    this.employeeTemplate = templateFactory.create(Employee.createEmpty)
         .defaultExchanger('id', 'id')
         .defaultExchanger('first-name', 'firstName')
         .defaultExchanger('last-name', 'lastName');

@@ -2,24 +2,20 @@ var gulp = require('gulp');
 var typescript = require('gulp-tsc');
 var del = require('del');
 var vinylPaths = require('vinyl-paths');
-var webserver = require('gulp-webserver');
+var restEmulator = require('gulp-rest-emulator');
 
 var nodeModulesDir = 'node_modules';
 var definitelyTypedDir = nodeModulesDir + '/DefinitelyTyped';
 var definitionsDir = 'definitions';
 var libsDir = 'libs';
 
-gulp.task('clean-definitions', function() {
-    return cleanPath(definitionsDir);
+gulp.task('examples', function () {
+    return gulp.src('./examples/api/**/*.js')
+        .pipe(restEmulator());
 });
 
-gulp.task('webserver', function() {
-    gulp.src('.')
-        .pipe(webserver({
-            livereload: true,
-            directoryListing: true,
-            open: true
-        }));
+gulp.task('clean-definitions', function() {
+    return cleanPath(definitionsDir);
 });
 
 gulp.task('copy-definitions', ['clean-definitions'], function() {
