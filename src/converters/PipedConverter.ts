@@ -6,10 +6,13 @@ module converters {
     import IPromise = angular.IPromise;
     import IQService = angular.IQService;
 
+    // Chains two Converter-instances. It takes both a Converter between S and T 
+    // and a Converter between T and U and acts as a Converter between S and U.
     export class PipedConverter<S, T, U> implements Converter<S, U> {
 
-        constructor(private first: Converter<S, T>, private second: Converter<T, U>) {
-
+        constructor(
+            private first: Converter<S, T>, 
+            private second: Converter<T, U>) {
         }
 
         from(s: IPromise<S>|S): IPromise<U> {

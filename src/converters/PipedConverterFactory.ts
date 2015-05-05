@@ -3,6 +3,7 @@
 
 module converters {
 
+    // Creates a PipedConverter. 
     export class PipedConverterFactory {
 
         create<S, T, U>(first: Converter<S, T>, second: Converter<T, U>): Converter<S, U> {

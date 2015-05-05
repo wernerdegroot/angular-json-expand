@@ -14,6 +14,9 @@ module converters {
     import Context = contexts.Context;
     import Template = templates.Template;
 
+    // Converts between an id (of type ID_TYPE) and a subject with this id (which should
+    // extend IdSubject<ID_TYPE>). It uses a Repository (with a corresponding Context and
+    // Template) to do so. 
     export class IdConverter<ID_TYPE, SUBJECT_TYPE extends IdSubject<any>> implements Converter<ID_TYPE, SUBJECT_TYPE> {
 
         constructor(
