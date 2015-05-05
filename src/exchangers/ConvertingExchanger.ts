@@ -7,7 +7,7 @@ module exchangers {
     import IPromise = angular.IPromise;
     import Converter = converters.Converter;
 
-    // Transfers data between a JSON object to a subject and vice versa.
+    // Transfers data between a JSON object to a domain object and vice versa.
     // Gives the user the chance to convert the data to another format
     // before the data is transferred.
     export class ConvertingExchanger<S, T> implements Exchanger {
@@ -15,20 +15,20 @@ module exchangers {
         constructor(
             private converter: Converter<S, T>,
             private jsonPropertyName: string,
-            private subjectPropertyName: string) {
+            private domainObjectPropertyName: string) {
         }
 
-        fromJson(json: Object, subject: Object): IPromise<any> {
+        fromJson(json: Object, domainObject: Object): IPromise<any> {
             var jsonValue: S = <S> json[this.jsonPropertyName];
-            var subjectValuePromise: IPromise<T> = this.converter.from(jsonValue);
-            return subjectValuePromise.then((subjectValue: T) => {
-                subject[this.subjectPropertyName] = subjectValue;
+            var domainObjectValuePromise: IPromise<T> = this.converter.from(jsonValue);
+            return domainObjectValuePromise.then((domainObjectValue: T) => {
+                domainObject[this.domainObjectPropertyName] = domainObjectValue;
             });
         }
 
-        toJson(subject: Object, json: Object): IPromise<any> {
-            var subjectValue: T = <T> subject[this.subjectPropertyName];
-            var jsonValuePromise: IPromise<S> = this.converter.to(subjectValue);
+        toJson(domainObject: Object, json: Object): IPromise<any> {
+            var domainObjectValue: T = <T> domainObject[this.domainObjectPropertyName];
+            var jsonValuePromise: IPromise<S> = this.converter.to(domainObjectValue);
             return jsonValuePromise.then((jsonValue: S) => {
                 json[this.jsonPropertyName] = jsonValue;
             });

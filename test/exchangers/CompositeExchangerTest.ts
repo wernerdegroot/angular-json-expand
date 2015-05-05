@@ -10,13 +10,13 @@ module exchangers {
         var firstExchanger;
         var secondExchanger;
 
-        // Prepare JSON and subject.
+        // Prepare JSON and domain object.
         var json = {
             jsonProperty: 'jsonValue'
         };
         
-        var subject = {
-            subjectProperty: 'subjectValue'
+        var domainObject = {
+            domainObjectProperty: 'domainObjectValue'
         }
 
         var q: IQService;
@@ -41,10 +41,10 @@ module exchangers {
             compositeExchanger.add(firstExchanger);
             compositeExchanger.add(secondExchanger);
 
-            compositeExchanger.fromJson(json, subject);
+            compositeExchanger.fromJson(json, domainObject);
 
-            expect(firstExchanger.fromJson.calledWith(json, subject)).to.be.ok;
-            expect(secondExchanger.fromJson.calledWith(json, subject)).to.be.ok;
+            expect(firstExchanger.fromJson.calledWith(json, domainObject)).to.be.ok;
+            expect(secondExchanger.fromJson.calledWith(json, domainObject)).to.be.ok;
 
             expect(firstExchanger.toJson.called).to.not.be.ok;
             expect(secondExchanger.toJson.called).to.not.be.ok;
@@ -56,13 +56,13 @@ module exchangers {
             compositeExchanger.add(firstExchanger);
             compositeExchanger.add(secondExchanger);
 
-            compositeExchanger.toJson(subject, json);
+            compositeExchanger.toJson(domainObject, json);
 
             expect(firstExchanger.fromJson.called).to.not.be.ok;
             expect(secondExchanger.fromJson.called).to.not.be.ok;
 
-            expect(firstExchanger.toJson.calledWith(subject, json)).to.be.ok;
-            expect(secondExchanger.toJson.calledWith(subject, json)).to.be.ok;
+            expect(firstExchanger.toJson.calledWith(domainObject, json)).to.be.ok;
+            expect(secondExchanger.toJson.calledWith(domainObject, json)).to.be.ok;
         });
     });
 }

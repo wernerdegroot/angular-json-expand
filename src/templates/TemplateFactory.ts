@@ -12,8 +12,8 @@ module templates {
         constructor(private $q: IQService) {
         }
         
-        public create<T>(subjectConstructor: () => T): Template<T> {
-            return new Template<T>(this.$q, subjectConstructor);
+        public create<T>(domainObjectConstructor: () => T): Template<T> {
+            return new Template<T>(this.$q, domainObjectConstructor);
         }
         
     }

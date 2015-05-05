@@ -8,7 +8,7 @@ module exchangers {
 
     // Combines several Exchanger instances to act as one single Exchanger. 
     // When this Exchanger is asked to transfer data between a JSON object 
-    // and a subject this request is dispatched to each contained Exchanger 
+    // and a domain object this request is dispatched to each contained Exchanger 
     // instance. 
     export class CompositeExchanger implements Exchanger {
 
@@ -23,19 +23,19 @@ module exchangers {
         }
 
         // Returns a Promise that is resolved when all data is exchanged.
-        fromJson(json: Object, subject: Object): IPromise<any> {
+        fromJson(json: Object, domainObject: Object): IPromise<any> {
             var promises: IPromise<any>[] = [];
             this.exchangers.forEach((exchanger: Exchanger) => {
-                promises.push(exchanger.fromJson(json, subject));
+                promises.push(exchanger.fromJson(json, domainObject));
             });
             return this.$q.all(promises);
         }
 
         // Returns a Promise that is resolved when all data is exchanged.
-        toJson(subject: Object, json: Object): IPromise<any> {
+        toJson(domainObject: Object, json: Object): IPromise<any> {
             var promises: IPromise<any>[] = [];
             this.exchangers.forEach((exchanger: Exchanger) => {
-                promises.push(exchanger.toJson(subject, json));
+                promises.push(exchanger.toJson(domainObject, json));
             });
             return this.$q.all(promises);
         }

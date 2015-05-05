@@ -20,8 +20,8 @@ module templates {
 
         var jsonStringValueProperty: string = 'jsonStringValue';
         var jsonNumberValueProperty: string = 'jsonNumberValue';
-        var subjectStringValueProperty: string = 'subjectStringValue';
-        var subjectNumberValueProperty: string = 'subjectNumberValue';
+        var domainObjectStringValueProperty: string = 'domainObjectStringValue';
+        var domainObjectNumberValueProperty: string = 'domainObjectNumberValue';
 
         beforeEach(inject(($q: IQService, $rootScope: IRootScopeService) => {
             q = $q;
@@ -32,50 +32,50 @@ module templates {
             rootScope.$digest();
         });
 
-        it('should transfer values from JSON to new subject', () => {
+        it('should transfer values from JSON to new domain object', () => {
 
             var json = {};
             json[jsonStringValueProperty] = stringValue;
             json[jsonNumberValueProperty] = numberValue;
             
-            var emptySubject: Object = {};
-            var subjectConstructor: () => Object = () => emptySubject;
+            var emptyDomainObject: Object = {};
+            var domainObjectConstructor: () => Object = () => emptyDomainObject;
             
             var templateFactory = new TemplateFactory(q);
-            var template: Template<Object> = templateFactory.create(subjectConstructor)
-                .add(new DefaultExchanger(q, jsonStringValueProperty, subjectStringValueProperty))
-                .add(new DefaultExchanger(q, jsonNumberValueProperty, subjectNumberValueProperty));
+            var template: Template<Object> = templateFactory.create(domainObjectConstructor)
+                .add(new DefaultExchanger(q, jsonStringValueProperty, domainObjectStringValueProperty))
+                .add(new DefaultExchanger(q, jsonNumberValueProperty, domainObjectNumberValueProperty));
                     
-            var subjectPromise = template.fromJson(json);
-            subjectPromise.then((subject: Object) => {
-                // Subject should be identical to the emptySubject which
+            var domainObjectPromise = template.fromJson(json);
+            domainObjectPromise.then((domainObject: Object) => {
+                // DomainObject should be identical to the emptyDomainObject which
                 // should both be enriched with exchanged data.
-                expect(subject).to.equal(emptySubject);
-                expect(subject[subjectStringValueProperty]).to.equal(stringValue);
-                expect(subject[subjectNumberValueProperty]).to.equal(numberValue);
+                expect(domainObject).to.equal(emptyDomainObject);
+                expect(domainObject[domainObjectStringValueProperty]).to.equal(stringValue);
+                expect(domainObject[domainObjectNumberValueProperty]).to.equal(numberValue);
             });
         });
         
-        it('should transfer values from subject to new JSON', () => {
+        it('should transfer values from domain object to new JSON', () => {
 
-            var subject = {};
-            subject[subjectStringValueProperty] = stringValue;
-            subject[subjectNumberValueProperty] = numberValue;
+            var domainObject = {};
+            domainObject[domainObjectStringValueProperty] = stringValue;
+            domainObject[domainObjectNumberValueProperty] = numberValue;
             
-            var subjectConstructor = sinon.stub();
+            var domainObjectConstructor = sinon.stub();
             
             var templateFactory = new TemplateFactory(q);
-            var template: Template<Object> = templateFactory.create(subjectConstructor)
-                .add(new DefaultExchanger(q, jsonStringValueProperty, subjectStringValueProperty))
-                .add(new DefaultExchanger(q, jsonNumberValueProperty, subjectNumberValueProperty));
+            var template: Template<Object> = templateFactory.create(domainObjectConstructor)
+                .add(new DefaultExchanger(q, jsonStringValueProperty, domainObjectStringValueProperty))
+                .add(new DefaultExchanger(q, jsonNumberValueProperty, domainObjectNumberValueProperty));
                     
-            var jsonPromise = template.toJson(subject);
+            var jsonPromise = template.toJson(domainObject);
             jsonPromise.then((json: Object) => {
                 expect(json[jsonStringValueProperty]).to.equal(stringValue);
                 expect(json[jsonNumberValueProperty]).to.equal(numberValue);
             });
             
-            expect(subjectConstructor.called).to.not.be.ok;
+            expect(domainObjectConstructor.called).to.not.be.ok;
         });
     });
 }

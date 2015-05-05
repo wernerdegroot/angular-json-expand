@@ -1,5 +1,5 @@
 /// <reference path="../../src/dependencies.ts" />
-/// <reference path="../../src/subjects/IdSubject.ts" />
+/// <reference path="../../src/domainobjects/DomainObject.ts" />
 /// <reference path="../../src/resourcelocations/ResourceLocation.ts" />
 /// <reference path="../../src/templates/Template.ts" />
 /// <reference path="../../src/repositories/Repository.ts" />
@@ -9,25 +9,25 @@
 module repositories {
 
     import IPromise = angular.IPromise;
-    import IdSubject = subjects.IdSubject;
+    import DomainObject = domainobjects.DomainObject;
     import ResourceLocation = resourcelocations.ResourceLocation;
     import Template = templates.Template;
     import DataService = dataservices.DataService;
 
-    export class DefaultRepository<ID_TYPE, SUBJECT_TYPE extends IdSubject<any>> implements Repository<ID_TYPE, SUBJECT_TYPE> {
+    export class DefaultRepository<ID_TYPE, DOMAIN_OBJECT_TYPE extends DomainObject<any>> implements Repository<ID_TYPE, DOMAIN_OBJECT_TYPE> {
 
-        constructor(private dataService: DataService<ID_TYPE, SUBJECT_TYPE>) {
+        constructor(private dataService: DataService<ID_TYPE, DOMAIN_OBJECT_TYPE>) {
         }
 
-        getById(id: ID_TYPE, resourceLocation: ResourceLocation<ID_TYPE>): IPromise<SUBJECT_TYPE> {
+        getById(id: ID_TYPE, resourceLocation: ResourceLocation<ID_TYPE>): IPromise<DOMAIN_OBJECT_TYPE> {
             return this.dataService.getById(id, resourceLocation, this.getTemplate());
         }
         
-        getAll(resourceLocation: ResourceLocation<ID_TYPE>): IPromise<SUBJECT_TYPE[]> {
+        getAll(resourceLocation: ResourceLocation<ID_TYPE>): IPromise<DOMAIN_OBJECT_TYPE[]> {
             return this.dataService.getAll(resourceLocation, this.getTemplate());
         }
         
-        getTemplate(): Template<SUBJECT_TYPE> {
+        getTemplate(): Template<DOMAIN_OBJECT_TYPE> {
             throw new Error('Method getTemplate not implemented!');
         }
 

@@ -12,10 +12,10 @@ module dataservices {
 		var q: IQService;
 		var rootScope: IRootScopeService;
 		var http;
-		var someSubject: Object;
-		var anotherSubject: Object;
-		var someSubjectPromise: IPromise<Object>;
-		var anotherSubjectPromise: IPromise<Object>;
+		var firstDomainObject: Object;
+		var secondDomainObject: Object;
+		var firstDomainObjectPromise: IPromise<Object>;
+		var secondDomainObjectPromise: IPromise<Object>;
 		var someJson: Object;
 		var anotherJson: Object;
 		var someJsonResponsePromise: IPromise<Object>;
@@ -31,16 +31,16 @@ module dataservices {
 			q = $q;
 			rootScope = $rootScope;
 			
-			// Mock subjects.
-			someSubject = {
+			// Mock domain objects.
+			firstDomainObject = {
 				guid: '0c8b736a1604'
 			};
-			someSubjectPromise = q.when(someSubject);
+			firstDomainObjectPromise = q.when(firstDomainObject);
 			
-			anotherSubject = {
+			secondDomainObject = {
 				guid: '20442b443f9d'
 			};
-			anotherSubjectPromise = q.when(anotherSubject);
+			secondDomainObjectPromise = q.when(secondDomainObject);
 			
 			// Mock JSON-objects.
 			someJson = {
@@ -83,13 +83,11 @@ module dataservices {
 		
 		it('should return a promise to a JSON-object when getById is called', () => {
 			
-			var someSubjectPromise: IPromise<Object> = q.when(someSubject);
-			
 			// Mock a Template.
 			var template = {
 				fromJson: sinon.stub()	
 			};
-			template.fromJson.withArgs(someJson).returns(someSubjectPromise);
+			template.fromJson.withArgs(someJson).returns(firstDomainObjectPromise);
 			
 			// Construct a DataService.
 			var dataService: DataService<number, any> = new DataService<number, any>(http, q);
@@ -97,8 +95,8 @@ module dataservices {
 			// Obtain a response through the DataService.
 			// Make sure that the response matches our expectations.
 			var responsePromise = dataService.getById(id, resourceLocation, <any> template);
-			responsePromise.then((subject: Object) => {
-				expect(subject).to.equal(someSubject);
+			responsePromise.then((domainObject: Object) => {
+				expect(domainObject).to.equal(firstDomainObject);
 			});
 		});
 		
@@ -134,14 +132,12 @@ module dataservices {
 		
 		it('should return a promise to a JSON-object when getAll is called', () => {
 			
-			var someSubjectPromise: IPromise<Object> = q.when(someSubject);
-			
 			// Mock a Template.
 			var template = {
 				fromJson: sinon.stub()	
 			};
-			template.fromJson.withArgs(someJson).returns(someSubjectPromise);
-			template.fromJson.withArgs(anotherJson).returns(anotherSubjectPromise);
+			template.fromJson.withArgs(someJson).returns(firstDomainObjectPromise);
+			template.fromJson.withArgs(anotherJson).returns(secondDomainObjectPromise);
 			
 			// Construct a DataService.
 			var dataService: DataService<number, any> = new DataService<number, any>(http, q);
@@ -149,9 +145,9 @@ module dataservices {
 			// Obtain a response through the DataService.
 			// Make sure that the response matches our expectations.
 			var responsePromise = dataService.getAll(resourceLocation, <any> template);
-			responsePromise.then((subject: Object[]) => {
-				expect(subject[0]).to.equal(someSubject);
-				expect(subject[1]).to.equal(anotherSubject);
+			responsePromise.then((domainObjects: Object[]) => {
+				expect(domainObjects[0]).to.equal(firstDomainObject);
+				expect(domainObjects[1]).to.equal(secondDomainObject);
 			});
 		});
 		

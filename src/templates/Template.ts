@@ -15,12 +15,12 @@ module templates {
         
         private compositeExchanger: CompositeExchanger;
 
-        constructor(private $q: IQService, private subjectConstructor: () => T) {
+        constructor(private $q: IQService, private domainObjectConstructor: () => T) {
             this.compositeExchanger = new CompositeExchanger($q);
         }
         
-        defaultExchanger(jsonPropertyName: string, subjectPropertyName: string): Template<T> {
-            return this.add(new DefaultExchanger(this.$q, jsonPropertyName, subjectPropertyName));
+        defaultExchanger(jsonPropertyName: string, domainObjectPropertyName: string): Template<T> {
+            return this.add(new DefaultExchanger(this.$q, jsonPropertyName, domainObjectPropertyName));
         }
         
         add(exchanger: Exchanger): Template<T> {
@@ -29,15 +29,15 @@ module templates {
         }
 
         fromJson(json: Object): IPromise<T> {
-            var subject: T = this.subjectConstructor();
-            return this.compositeExchanger.fromJson(json, subject).then(() => {
-                return subject;
+            var domainObject: T = this.domainObjectConstructor();
+            return this.compositeExchanger.fromJson(json, domainObject).then(() => {
+                return domainObject;
             });
         }
 
-        toJson(subject: T): IPromise<any> {
+        toJson(domainObject: T): IPromise<any> {
             var json = {};
-            return this.compositeExchanger.toJson(subject, json).then(() => {
+            return this.compositeExchanger.toJson(domainObject, json).then(() => {
                 return json;
             });
         }

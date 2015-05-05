@@ -13,7 +13,7 @@ module exchangers {
 
         // Prepare keys.
         var jsonPropertyName = "jsonProperty";
-        var subjectPropertyName = "subjectProperty";
+        var domainObjectPropertyName = "domainObjectProperty";
 
         var q: IQService;
         var rootScope;
@@ -27,45 +27,45 @@ module exchangers {
             rootScope.$digest();
         })
 
-        it('should transfer value from JSON to subject', () => {
+        it('should transfer value from JSON to domain object', () => {
 
             // Prepare JSON-object.
             var json = {};
             json[jsonPropertyName] = value;
 
-            // Prepare subject.
-            var subject = {};
+            // Prepare domain object.
+            var domainObject = {};
 
-            // Exchange a property between a JSON-object and a subject.
+            // Exchange a property between a JSON-object and a domain object.
             var defaultExchanger = new DefaultExchanger(
                 q,
                 jsonPropertyName,
-                subjectPropertyName
+                domainObjectPropertyName
             );
 
-            defaultExchanger.fromJson(json, subject).then(() => {
+            defaultExchanger.fromJson(json, domainObject).then(() => {
                 // Check that the property was exchanged successfully.
-                expect(subject[subjectPropertyName]).to.equal(value);
+                expect(domainObject[domainObjectPropertyName]).to.equal(value);
             });
         });
 
-        it('should transfer value from subject to JSON', () => {
+        it('should transfer value from domain object to JSON', () => {
 
             // Prepare JSON-object.
             var json = {};
 
-            // Prepare subject.
-            var subject = {};
-            subject[subjectPropertyName] = value;
+            // Prepare domain object.
+            var domainObject = {};
+            domainObject[domainObjectPropertyName] = value;
 
-            // Exchange a property between a JSON-object and a subject.
+            // Exchange a property between a JSON-object and a domain object.
             var defaultExchanger = new DefaultExchanger(
                 q,
                 jsonPropertyName,
-                subjectPropertyName
+                domainObjectPropertyName
             );
 
-            defaultExchanger.toJson(subject, json).then(() => {
+            defaultExchanger.toJson(domainObject, json).then(() => {
                 // Check that the property was exchanged successfully.
                 expect(json[jsonPropertyName]).to.equal(value);
             });
