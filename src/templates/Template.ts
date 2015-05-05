@@ -28,11 +28,6 @@ module templates {
             return this;
         }
 
-        addAll(exchangers: Exchanger[]): Template<T> {
-            this.compositeExchanger.addAll(exchangers);
-            return this;
-        }
-        
         fromJson(json: Object): IPromise<T> {
             var subject: T = this.subjectConstructor();
             return this.compositeExchanger.fromJson(json, subject).then(() => {

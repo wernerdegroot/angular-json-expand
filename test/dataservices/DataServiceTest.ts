@@ -20,8 +20,10 @@ module dataservices {
 		var anotherJson: Object;
 		var someJsonResponsePromise: IPromise<Object>;
 		var allJsonResponsePromise: IPromise<Object>;
+		var errorResponsePromise: IPromise<Object>;
 		var singleUrl: string;
 		var allUrl: string;
+		var errorUrl: string;
 		var context;
 		var id: number = 42;
 		
@@ -51,9 +53,12 @@ module dataservices {
 			}
 			allJsonResponsePromise = q.when({data: [someJson, anotherJson]});
 			
+			errorResponsePromise = q.reject();
+			
 			// Some URL's.
 			singleUrl = '/api/some-resource/42';
 			allUrl = '/api/some-resource';
+			errorUrl = '/api/some-resource/non-existing-id';
 			
 			// Mock $http-service.
 			http = {
@@ -61,6 +66,7 @@ module dataservices {
 			};
 			http.get.withArgs(singleUrl).returns(someJsonResponsePromise);
 			http.get.withArgs(allUrl).returns(allJsonResponsePromise);
+			http.get.withArgs(errorUrl).returns(errorResponsePromise);
 			
 			// Mock a Context.
 			context = {
@@ -85,15 +91,45 @@ module dataservices {
 			};
 			template.fromJson.withArgs(someJson).returns(someSubjectPromise);
 			
-			// Construct a DefaultRepository.
-			var defaultRepository = new DataService<number, any>(http, q);
+			// Construct a DataService.
+			var dataService: DataService<number, any> = new DataService<number, any>(http, q);
 			
-			// Obtain a response through the DefaultRepository.
+			// Obtain a response through the DataService.
 			// Make sure that the response matches our expectations.
-			var responsePromise = defaultRepository.getById(id, context, <any> template);
+			var responsePromise = dataService.getById(id, context, <any> template);
 			responsePromise.then((subject: Object) => {
 				expect(subject).to.equal(someSubject);
 			});
+		});
+		
+		it('should return a rejected promise when getById is called but the server returns an error', () => {
+			
+			// Mock a Context that returns an URL at which an error will be generated.
+			var errorContext = {
+				getSingleUrl: sinon.stub(),
+				getAllUrl: sinon.stub()	
+			};
+			errorContext.getSingleUrl.returns(errorUrl);
+			
+			// Mock a Template.
+			var template = {
+				fromJson: sinon.stub()	
+			};
+			
+			// Construct a DataService.
+			var dataService: DataService<number, any> = new DataService<number, any>(http, q);
+			
+			// Obtain a response through the DataService.
+			var responsePromise = dataService.getById(id, errorContext, <any> template);
+			
+			var errorRaised: boolean = false;
+			responsePromise.catch(() => {
+				errorRaised = true;
+			});
+			
+			expect(errorRaised).to.be.false;
+			rootScope.$digest(); // Resolve promises.
+			expect(errorRaised).to.be.true;
 		});
 		
 		it('should return a promise to a JSON-object when getAll is called', () => {
@@ -107,16 +143,46 @@ module dataservices {
 			template.fromJson.withArgs(someJson).returns(someSubjectPromise);
 			template.fromJson.withArgs(anotherJson).returns(anotherSubjectPromise);
 			
-			// Construct a DefaultRepository.
-			var defaultRepository = new DataService<number, any>(http, q);
+			// Construct a DataService.
+			var dataService: DataService<number, any> = new DataService<number, any>(http, q);
 			
-			// Obtain a response through the DefaultRepository.
+			// Obtain a response through the DataService.
 			// Make sure that the response matches our expectations.
-			var responsePromise = defaultRepository.getAll(context, <any> template);
+			var responsePromise = dataService.getAll(context, <any> template);
 			responsePromise.then((subject: Object[]) => {
 				expect(subject[0]).to.equal(someSubject);
 				expect(subject[1]).to.equal(anotherSubject);
 			});
+		});
+		
+		it('should return a rejected promise when getAll is called but the server returns an error', () => {
+			
+			// Mock a Context that returns an URL at which an error will be generated.
+			var errorContext = {
+				getSingleUrl: sinon.stub(),
+				getAllUrl: sinon.stub()	
+			};
+			errorContext.getAllUrl.returns(errorUrl);
+			
+			// Mock a Template.
+			var template = {
+				fromJson: sinon.stub()	
+			};
+			
+			// Construct a DataService.
+			var dataService: DataService<number, any> = new DataService<number, any>(http, q);
+			
+			// Obtain a response through the DataService.
+			var responsePromise = dataService.getAll(errorContext, <any> template);
+			
+			var errorRaised: boolean = false;
+			responsePromise.catch(() => {
+				errorRaised = true;
+			});
+			
+			expect(errorRaised).to.be.false;
+			rootScope.$digest(); // Resolve promises.
+			expect(errorRaised).to.be.true;
 		});
 				
 	});

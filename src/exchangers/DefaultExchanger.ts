@@ -6,13 +6,14 @@ module exchangers {
     import IPromise = angular.IPromise;
     import IQService = angular.IQService;
 
+    // Transfers data between a JSON object to a subject and vice versa
+    // in the simplest way possible.
     export class DefaultExchanger implements Exchanger {
 
         constructor(
             private $q: IQService,
             private jsonPropertyName: string,
             private subjectPropertyName: string) {
-
         }
 
         fromJson(json: Object, subject: Object): IPromise<any> {

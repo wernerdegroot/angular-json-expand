@@ -15,20 +15,24 @@ module dataservices {
 	import IHttpPromiseCallbackArg = angular.IHttpPromiseCallbackArg;
 	import IQService = angular.IQService;
 	
+	// Retrieves JSON objects from the server and transforms these to domain objects
+	// using the provided template objects.
 	export class DataService<ID_TYPE, SUBJECT_TYPE extends IdSubject<any>> {
 		
 		static injectAs: string = 'dataService';
 		
-		constructor(private $http: IHttpService, private $q: IQService) {
-			
+		constructor(
+			private $http: IHttpService, 
+			private $q: IQService) {
 		}
 		
 		getById(id: ID_TYPE, context: Context<ID_TYPE>, template: Template<SUBJECT_TYPE>): IPromise<SUBJECT_TYPE> {
-			var responsePromise: IHttpPromise<Object> = this.$http.get<Object>(context.getSingleUrl(id));
+			var subjectUrl: string = context.getSingleUrl(id);
+			var responsePromise: IHttpPromise<Object> = this.$http.get<Object>(subjectUrl);
 			var responseHandler = (response: IHttpPromiseCallbackArg<Object>) => {
 				return template.fromJson(response.data);
 			};
-			  
+			
 			return responsePromise.then(responseHandler);
 		}
 		
@@ -36,7 +40,8 @@ module dataservices {
 			
 			var self = this;
 			
-			var responsePromise = this.$http.get<Object[]>(context.getAllUrl());
+			var allUrl: string = context.getAllUrl();
+			var responsePromise = this.$http.get<Object[]>(allUrl);
 			var responseHandler = (response: IHttpPromiseCallbackArg<Object[]>) => {
 				var jsonPromises: IPromise<SUBJECT_TYPE>[] 
 					= response.data.map((json: Object) => template.fromJson(json)); 

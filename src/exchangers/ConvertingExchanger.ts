@@ -7,13 +7,15 @@ module exchangers {
     import IPromise = angular.IPromise;
     import Converter = converters.Converter;
 
+    // Transfers data between a JSON object to a subject and vice versa.
+    // Gives the user the chance to convert the data to another format
+    // before the data is transferred.
     export class ConvertingExchanger<S, T> implements Exchanger {
 
         constructor(
             private converter: Converter<S, T>,
             private jsonPropertyName: string,
             private subjectPropertyName: string) {
-
         }
 
         fromJson(json: Object, subject: Object): IPromise<any> {
