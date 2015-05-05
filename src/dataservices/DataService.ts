@@ -1,11 +1,10 @@
 /// <reference path="../../src/dependencies.ts" />
-/// <reference path="../../src/repositories/Repository.ts" />
 /// <reference path="../../src/dependencies.ts" />
 /// <reference path="../../src/subjects/IdSubject.ts" />
 /// <reference path="../../src/contexts/Context.ts" />
 /// <reference path="../../src/templates/Template.ts" />
 
-module repositories {
+module dataservices {
 	
 	import IPromise = angular.IPromise;
 	import IHttpPromise = angular.IHttpPromise;
@@ -16,7 +15,7 @@ module repositories {
 	import IHttpPromiseCallbackArg = angular.IHttpPromiseCallbackArg;
 	import IQService = angular.IQService;
 	
-	export class DefaultRepository<ID_TYPE, SUBJECT_TYPE extends IdSubject<any>> implements Repository<ID_TYPE, SUBJECT_TYPE> {
+	export class DataService<ID_TYPE, SUBJECT_TYPE extends IdSubject<any>> {
 		
 		constructor(private $http: IHttpService, private $q: IQService) {
 			

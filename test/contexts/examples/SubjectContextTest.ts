@@ -8,7 +8,7 @@
 /// <reference path="../../../src/templates/TemplateFactory.ts" />
 /// <reference path="../../../src/templates/Template.ts" />
 /// <reference path="../../../src/exchangers/DefaultExchanger.ts" />
-/// <reference path="../../../src/repositories/DefaultRepository.ts" />
+/// <reference path="../../../src/dataservices/DataService.ts" />
 
 module contexts.examples {
     
@@ -18,7 +18,7 @@ module contexts.examples {
     import Template = templates.Template;
     import TemplateFactory = templates.TemplateFactory;
     import DefaultExchanger = exchangers.DefaultExchanger;
-    import DefaultRepository = repositories.DefaultRepository;
+    import DataService = dataservices.DataService;
 
     describe('SubjectContext', () => {
         
@@ -79,11 +79,11 @@ module contexts.examples {
             expect(subjectContext.getSingleUrl(subject.getId())).to.equal(singleUrl);
             expect(subjectContext.getAllUrl()).to.equal(allUrl);
             
-            var defaultRepository: DefaultRepository<number, any> = new DefaultRepository(http, q);
+            var dataService: DataService<number, any> = new DataService(http, q);
             
             // Obtain a response through the DefaultRepository.
 			// Make sure that the response matches our expectations.
-			var responsePromise = defaultRepository.getById(subject.getId(), subjectContext, subjectTemplate);
+			var responsePromise = dataService.getById(subject.getId(), subjectContext, subjectTemplate);
 			responsePromise.then((subject: Subject) => {
 				expect(subject.subjectStringProperty).to.equal('twelve');
                 expect(subject.subjectNumberProperty).to.equal(12);

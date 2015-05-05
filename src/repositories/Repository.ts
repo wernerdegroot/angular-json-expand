@@ -12,9 +12,9 @@ module repositories {
 
     export interface Repository<ID_TYPE, SUBJECT_TYPE extends IdSubject<any>> {
 
-        getById(id: ID_TYPE, context: Context<ID_TYPE>, template: Template<SUBJECT_TYPE>): IPromise<SUBJECT_TYPE>;
+        getById(id: ID_TYPE, context: Context<ID_TYPE>): IPromise<SUBJECT_TYPE>;
         
-        getAll(context: Context<ID_TYPE>, template: Template<SUBJECT_TYPE>): IPromise<SUBJECT_TYPE[]>;
+        getAll(context: Context<ID_TYPE>): IPromise<SUBJECT_TYPE[]>;
 
     }
 }

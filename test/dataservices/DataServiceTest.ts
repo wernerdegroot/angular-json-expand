@@ -1,13 +1,13 @@
 /// <reference path="../test-dependencies.ts" />
-/// <reference path="../../src/repositories/DefaultRepository.ts" />
+/// <reference path="../../src/dataservices/DataService.ts" />
 
-module repositories {
+module dataservices {
 	
 	import IQService = angular.IQService;
 	import IPromise = angular.IPromise;
 	import IRootScopeService = angular.IRootScopeService;
 	
-	describe('DefaultRepository',  () => {
+	describe('DataService',  () => {
 		
 		var q: IQService;
 		var rootScope: IRootScopeService;
@@ -86,7 +86,7 @@ module repositories {
 			template.fromJson.withArgs(someJson).returns(someSubjectPromise);
 			
 			// Construct a DefaultRepository.
-			var defaultRepository = new DefaultRepository<number, any>(http, q);
+			var defaultRepository = new DataService<number, any>(http, q);
 			
 			// Obtain a response through the DefaultRepository.
 			// Make sure that the response matches our expectations.
@@ -108,7 +108,7 @@ module repositories {
 			template.fromJson.withArgs(anotherJson).returns(anotherSubjectPromise);
 			
 			// Construct a DefaultRepository.
-			var defaultRepository = new DefaultRepository<number, any>(http, q);
+			var defaultRepository = new DataService<number, any>(http, q);
 			
 			// Obtain a response through the DefaultRepository.
 			// Make sure that the response matches our expectations.
