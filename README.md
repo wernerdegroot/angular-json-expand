@@ -4,7 +4,7 @@
 
 ## A minimal example
 
-Suppose we have a JSON object representing a employee working at Acme Corporation which can be found at `/api/companies/acme/employees/rudolph`. The JSON object looks like this:
+Suppose we have a JSON object representing a employee working at Acme Corporation which can be found at `http://localhost:8000/api/companies/acme/employees/rudolph`. The JSON object looks like this:
 
 ```json
 {
@@ -39,7 +39,7 @@ First, let's configure the URL hierarchy. We create a corresponding hierarchy of
 ```javascript
 // Determine the root of the server.
 var RootContext = function () {
-    this.rootUrl = '/api';    
+    this.rootUrl = 'http://localhost:8000/api';    
 };
 
 RootContext.prototype.getSingleUrl = function () {
@@ -94,23 +94,23 @@ we can determine the URL at which the JSON representation of Rudolph lives:
 ```javascript
 var rootContext = new RootContext();
 var companyContext = new CompanyContext(rootContext);
-var rudolphContext = new EmployeeContext('acme', companyContext);
-var rudolphUrl = rudolphContext.getSingleUrl('rudolph');
+var acmeEmployeeContext = new EmployeeContext('acme', companyContext);
+var rudolphUrl = acmeEmployeeContext.getSingleUrl('rudolph');
 ```
 
-A context object should have at least the following two methods:
+In order for *angular-json-expand* to be able to use a context object, a context object must have at least the following two methods:
 
  1. `getSingleUrl` which takes an `id` and produces the URL where the JSON object with the given id lives
  2. `getAllUrl` which produces the URL at which all JSON objects of this type can be found
 
 ### JSON definition
 
-A template object defines what the JSON object looks like and how it should be converted to a full-fledged domain object. The following service is defined in **EmployeeRepository.js**:
+Just like a context object defines where a certain JSON object lives, a template object defines what the JSON object looks like and how it should be converted to a full-fledged domain object. The following service is defined in **EmployeeRepository.js**:
 
 ```javascript
 
 var EmployeeRepository = function (templateFactory) {
-    this.employeeTemplate = templateFactory.create(Employee)
+    this.employeeTemplate = templateFactory.create(Employee.createEmpty)
         .defaultConverter('id', 'id')
         .defaultConverter('first-name', 'firstName')
         .defaultConverter('last-name', 'lastName');
@@ -123,9 +123,17 @@ EmployeeRepository.prototype.getTemplate = function () {
     return this.employeeTemplate;
 };
 
-var myModule = angular.module('myModule', ['angularJsonExpand']);
 ```
-Using an injected `templateFactory` we create a new template object which contains three default converters. As you can probably guess, these default converters are used to transform JSON objects to domain objects and vice versa. We'll encounter several more converters in subsequent examples.
+Using an injected `templateFactory` we create a new template object by passing it a means to construct an empty `Employee` object. The function `Employee.createEmpty` is defined as follows
+
+```javascript
+// Create an empty Employee (with the name John Doe).
+Employee.createEmpty = function () {
+    return new Employee(null, 'John', 'Doe');  
+};
+```
+
+We also configure three default exchangers which, as you can probably guess, are used to transform JSON objects to domain objects and vice versa. We'll encounter several more exchangers in subsequent examples.
 
 The `EmployeeRepository` service is based on a more general `Repository` which will allow us to retrieve a fully functioning `Employee` from the server. In order to provide this repository with a means to access our template object, the method `getTemplate` (which, of course, should return a template) is mandatory.
 
@@ -136,9 +144,20 @@ Getting a `Employee` from the server is laughably simple. Simply create Rudolph'
 ```javascript
 var rootContext = new RootContext();
 var companyContext = new CompanyContext(rootContext);
-var rudolphContext = new EmployeeContext('acme', companyContext);
-var rudolph = employeeRepository.getById('rudolph', rudolphContext);
-console.log('Hello, ' + rudolph.getFullName() + '!'); // Hello, Rudolph le Grand!
+var acmeEmployeeContext = new EmployeeContext('acme', companyContext);
+
+// Obtain Rudolph.
+var rudolphPromise = employeeRepository.getById('rudolph', acmeEmployeeContext);
+rudolphPromise.then(function (rudolph) {
+	console.info('Hello, ' + rudolph.getFullName() + '!');
+});
+
+// Try to obtain a non-existing employee (which, of course, will fail).
+var nonExistingEmployeePromise 
+	= employeeRepository.getById('does-not-exist', acmeEmployeeContext);
+nonExistingEmployeePromise.catch(function () {
+	console.error('An error occurred when fetching a non-existing employee!')
+});
 ```
 
 In this example, we assume that a `EmployeeRepository` can be injected as `employeeRepository`.  This example can be found in the examples directory.

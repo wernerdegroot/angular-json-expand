@@ -1,1 +1,1 @@
-/// <reference path="../definitions/angularjs/angular.d.ts" />
+/// <reference path="../node_modules/DefinitelyTyped/angularjs/angular.d.ts" />

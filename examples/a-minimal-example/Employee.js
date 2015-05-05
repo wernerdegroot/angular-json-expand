@@ -4,6 +4,7 @@ var Employee = function (id, firstName, lastName) {
     this.lastName = lastName;
 };
 
+// Create an empty Employee (with the name John Doe).
 Employee.createEmpty = function () {
     return new Employee(null, 'John', 'Doe');  
 };
