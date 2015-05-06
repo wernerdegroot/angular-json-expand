@@ -4,7 +4,7 @@ module.exports = function (config) {
 
         basePath: '',
 
-        frameworks: ['mocha', 'chai', 'sinon'],
+        frameworks: ['mocha', 'chai-as-promised', 'chai', 'sinon'],
 
         files: [], // Defined in gulpfile.js.
 

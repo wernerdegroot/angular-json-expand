@@ -102,9 +102,7 @@ module dataservices {
 			// Obtain a response through the DataService.
 			// Make sure that the response matches our expectations.
 			var responsePromise = dataService.getById(id, resourceLocation, <any> objectMapper);
-			responsePromise.then((domainObject: Object) => {
-				expect(domainObject).to.equal(firstDomainObject);
-			});
+			expect(responsePromise).to.eventually.equal(firstDomainObject);
 		});
 		
 		it('should return a rejected promise when getById is called but the server returns an error', () => {
@@ -114,11 +112,19 @@ module dataservices {
 			
 			// Obtain a response through the DataService.
 			var responsePromise = dataService.getById(id, resourceLocationWithError, <any> objectMapper);
-			console.log(responsePromise);
-			responsePromise.then(function () {
-				// Fail the test when te promise is succesfully resolved.
-				expect(true).to.be.false; 
-			});
+			expect(responsePromise).to.be.rejected;
+		});
+		
+		it('should return a rejected promise when getById is called but the ObjectMapper returns an error', () => {
+			
+			objectMapper.fromJson.withArgs(firstJson).returns(q.reject());
+			
+			// Construct a DataService.
+			var dataService: DataService<number, MyDomainObject> = new DataService<number, MyDomainObject>(http, q);
+			
+			// Obtain a response through the DataService.
+			var responsePromise = dataService.getById(id, resourceLocation, <any> objectMapper);
+			expect(responsePromise).to.be.rejected;
 		});
 		
 		it('should return a promise to a JSON-object when getAll is called', () => {
@@ -145,11 +151,20 @@ module dataservices {
 			
 			// Obtain a response through the DataService.
 			var responsePromise = dataService.getAll(resourceLocationWithError, <any> objectMapper);
+			expect(responsePromise).to.be.rejected;
+		});
+		
+		it('should return a rejected promise when getAll is called but the ObjectMapper returns an error for one of the JSON objects', () => {
 			
-			responsePromise.then(function () {
-				// Fail the test when te promise is succesfully resolved.
-				expect(true).to.be.false; 
-			});
+			objectMapper.fromJson.withArgs(firstJson).returns(firstDomainObjectPromise);
+			objectMapper.fromJson.withArgs(secondJson).returns(q.reject());
+			
+			// Construct a DataService.
+			var dataService: DataService<number, MyDomainObject> = new DataService<number, MyDomainObject>(http, q);
+			
+			// Obtain a response through the DataService.
+			var responsePromise = dataService.getAll(resourceLocation, <any> objectMapper);
+			expect(responsePromise).to.be.rejected;
 		});
 				
 	});
