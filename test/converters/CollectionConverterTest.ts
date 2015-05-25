@@ -70,6 +70,28 @@ module converters {
 			});
         });
 		
+		it('should transform null and undefined to a rejected promise when calling from', () => {
+			
+			var collectionConverter: CollectionConverter<number, string> = new CollectionConverter<number, string>(q, converter);
+			
+			var stringCollectionPromise = collectionConverter.from(null);
+			expect(stringCollectionPromise).to.be.rejected;
+			
+			stringCollectionPromise = collectionConverter.from(undefined);
+			expect(stringCollectionPromise).to.be.rejected;
+		});
+		
+		it('should transform a promise to null and a promise to undefined to a rejected promise when calling from', () => {
+			
+			var collectionConverter: CollectionConverter<number, string> = new CollectionConverter<number, string>(q, converter);
+			
+			var stringCollectionPromise = collectionConverter.from(q.when(null));
+			expect(stringCollectionPromise).to.be.rejected;
+			
+			stringCollectionPromise = collectionConverter.from(q.when(undefined));
+			expect(stringCollectionPromise).to.be.rejected;
+		});
+		
 		it('should transform a rejected promise to a collection of numbers into a rejected promise', () => {
 
             var collectionConverter: CollectionConverter<number, string> = new CollectionConverter<number, string>(q, converter);
@@ -118,6 +140,28 @@ module converters {
 			
 			var collectionConverter: CollectionConverter<number, string> = new CollectionConverter<number, string>(q, failingConverter);
 			var numberCollectionPromise = collectionConverter.to([firstString, secondString]);
+			expect(numberCollectionPromise).to.be.rejected;
+		});
+		
+		it('should transform null and undefined into a rejected promise when calling to', () => {
+			
+			var collectionConverter: CollectionConverter<number, string> = new CollectionConverter<number, string>(q, failingConverter);
+			
+			var numberCollectionPromise = collectionConverter.to(null);
+			expect(numberCollectionPromise).to.be.rejected;
+			
+			var numberCollectionPromise = collectionConverter.to(undefined);
+			expect(numberCollectionPromise).to.be.rejected;
+		});
+		
+		it('should transform a promise to null and a promise to undefined into a rejected promise when calling to', () => {
+			
+			var collectionConverter: CollectionConverter<number, string> = new CollectionConverter<number, string>(q, failingConverter);
+			
+			var numberCollectionPromise = collectionConverter.to(q.when(null));
+			expect(numberCollectionPromise).to.be.rejected;
+			
+			var numberCollectionPromise = collectionConverter.to(q.when(undefined));
 			expect(numberCollectionPromise).to.be.rejected;
 		});
     });

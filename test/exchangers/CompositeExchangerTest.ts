@@ -1,9 +1,13 @@
 /// <reference path="../../test/test-dependencies.ts" />
 /// <reference path="../../src/exchangers/CompositeExchanger.ts" />
+/// <reference path="../../test/domainobjects/MockDomainObject.ts" />
+/// <reference path="../../src/domainobjects/DomainObject.ts" />
 
 module exchangers {
 
     import IQService = angular.IQService;
+    import MockDomainObject = domainobjects.MockDomainObject;
+    import DomainObject = domainobjects.DomainObject;
 
     describe('CompositeExchanger', () => {
 
@@ -15,10 +19,11 @@ module exchangers {
             jsonProperty: 'jsonValue'
         };
         
-        var domainObject = {
-            domainObjectProperty: 'domainObjectValue'
-        }
-
+        var domainObject = new MockDomainObject();
+        domainObject['domainObjectProperty'] = 'domainObjectValue';
+        
+        var parentDomainObject = new MockDomainObject();
+        
         var q: IQService;
 
         beforeEach(inject(($q) => {
@@ -37,14 +42,14 @@ module exchangers {
 
         it('should call each Exchanger on a call to method fromJson', () => {
 
-            var compositeExchanger: CompositeExchanger = new CompositeExchanger(q);
+            var compositeExchanger: CompositeExchanger<DomainObject, DomainObject> = new CompositeExchanger<DomainObject, DomainObject>(q);
             compositeExchanger.add(firstExchanger);
             compositeExchanger.add(secondExchanger);
 
-            compositeExchanger.fromJson(json, domainObject);
+            compositeExchanger.fromJson(json, domainObject, 'slug', parentDomainObject);
 
-            expect(firstExchanger.fromJson.calledWith(json, domainObject)).to.be.ok;
-            expect(secondExchanger.fromJson.calledWith(json, domainObject)).to.be.ok;
+            expect(firstExchanger.fromJson.calledWith(json, domainObject, 'slug', parentDomainObject)).to.be.ok;
+            expect(secondExchanger.fromJson.calledWith(json, domainObject, 'slug', parentDomainObject)).to.be.ok;
 
             expect(firstExchanger.toJson.called).to.not.be.ok;
             expect(secondExchanger.toJson.called).to.not.be.ok;
@@ -52,7 +57,7 @@ module exchangers {
 
         it('should call each Exchanger on a call to method toJson', () => {
 
-            var compositeExchanger: CompositeExchanger = new CompositeExchanger(q);
+            var compositeExchanger: CompositeExchanger<DomainObject, DomainObject> = new CompositeExchanger<DomainObject, DomainObject>(q);
             compositeExchanger.add(firstExchanger);
             compositeExchanger.add(secondExchanger);
 

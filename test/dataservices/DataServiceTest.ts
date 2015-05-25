@@ -1,12 +1,15 @@
 /// <reference path="../test-dependencies.ts" />
 /// <reference path="../../src/dataservices/DataService.ts" />
 /// <reference path="../../test/dataservices/MyDomainObject.ts" />
+/// <reference path="../../test/dataservices/MockUrlBuilder.ts" />
+/// <reference path="../../test/domainobjects/MockDomainObject.ts" />
 
 module dataservices {
 	
 	import IQService = angular.IQService;
 	import IPromise = angular.IPromise;
 	import IRootScopeService = angular.IRootScopeService;
+	import MockDomainObject = domainobjects.MockDomainObject;
 	
 	describe('DataService',  () => {
 		
@@ -25,10 +28,12 @@ module dataservices {
 		var singleUrl: string;
 		var allUrl: string;
 		var errorUrl: string;
-		var resourceLocation;
-		var resourceLocationWithError;
 		var objectMapper;
 		var id: number = 42;
+		var slug: string = 'slug';
+		var errorSlug: string = 'error-slug';
+		var urlBuilder;
+		var parentDomainObject;
 		
 		var createMockObject = (guid: string) => {
 			return {
@@ -66,107 +71,97 @@ module dataservices {
 			http.get.withArgs(allUrl).returns(allJsonResponsePromise);
 			http.get.withArgs(errorUrl).returns(errorResponsePromise);
 			
-			// Mock a ResourceLocation.
-			resourceLocation = {
-                getSingleUrl: sinon.stub(),
-				getAllUrl: sinon.stub()
-            };
-			resourceLocation.getSingleUrl.withArgs(id).returns(singleUrl);
-			resourceLocation.getAllUrl.returns(allUrl);
-			
-			// Mock a ResourceLocation that returns an URL at which an error will be generated.
-			resourceLocationWithError = {
-				getSingleUrl: sinon.stub(),
-				getAllUrl: sinon.stub()	
-			};
-			resourceLocationWithError.getAllUrl.returns(errorUrl);
-			resourceLocationWithError.getSingleUrl.returns(errorUrl);
-			
 			// Mock an ObjectMapper.
 			objectMapper = {
 				fromJson: sinon.stub()	
 			};
+			
+			// Mock a parent domain object.
+			parentDomainObject = new MockDomainObject();
+			
+			// Mock an UrlBuilder.
+			urlBuilder = new MockUrlBuilder();
+			urlBuilder.buildSingleUrl.withArgs(id, slug, parentDomainObject).returns(singleUrl);
+			urlBuilder.buildCollectionUrl.withArgs(slug, parentDomainObject).returns(allUrl);
+			urlBuilder.buildSingleUrl.withArgs(id, errorSlug, parentDomainObject).returns(errorUrl);
+			urlBuilder.buildCollectionUrl.withArgs(errorSlug, parentDomainObject).returns(errorUrl);
 		}));
 		
 		afterEach(() => {
             rootScope.$digest();
         });
 		
-		it('should return a promise to a JSON-object when getById is called', () => {
+		describe('getSingle', () => {
 			
-			objectMapper.fromJson.withArgs(firstJson).returns(firstDomainObjectPromise);
+			it('should return a promise to a JSON-object', () => {
 			
-			// Construct a DataService.
-			var dataService: DataService<number, MyDomainObject> = new DataService<number, MyDomainObject>(http, q);
+				objectMapper.fromJson.withArgs(firstJson).returns(firstDomainObjectPromise);
+				
+				var dataService: DataService = new DataService(http, q, urlBuilder);
+				
+				var responsePromise = dataService.getSingle(id, slug, parentDomainObject, <any> objectMapper);
+				
+				expect(responsePromise).to.not.be.rejected;
+				expect(responsePromise).to.eventually.equal(firstDomainObject);
+			});
 			
-			// Obtain a response through the DataService.
-			// Make sure that the response matches our expectations.
-			var responsePromise = dataService.getById(id, resourceLocation, <any> objectMapper);
-			expect(responsePromise).to.eventually.equal(firstDomainObject);
-		});
-		
-		it('should return a rejected promise when getById is called but the server returns an error', () => {
+			it('should return a rejected promise when the server returns a rejected promise', () => {
+				
+				var dataService: DataService = new DataService(http, q, urlBuilder);
+				
+				var responsePromise = dataService.getSingle(id, errorSlug, parentDomainObject, <any> objectMapper);
+				
+				expect(responsePromise).to.be.rejected;
+			});
 			
-			// Construct a DataService.
-			var dataService: DataService<number, MyDomainObject> = new DataService<number, MyDomainObject>(http, q);
-			
-			// Obtain a response through the DataService.
-			var responsePromise = dataService.getById(id, resourceLocationWithError, <any> objectMapper);
-			expect(responsePromise).to.be.rejected;
-		});
-		
-		it('should return a rejected promise when getById is called but the ObjectMapper returns an error', () => {
-			
-			objectMapper.fromJson.withArgs(firstJson).returns(q.reject());
-			
-			// Construct a DataService.
-			var dataService: DataService<number, MyDomainObject> = new DataService<number, MyDomainObject>(http, q);
-			
-			// Obtain a response through the DataService.
-			var responsePromise = dataService.getById(id, resourceLocation, <any> objectMapper);
-			expect(responsePromise).to.be.rejected;
-		});
-		
-		it('should return a promise to a JSON-object when getAll is called', () => {
-			
-			objectMapper.fromJson.withArgs(firstJson).returns(firstDomainObjectPromise);
-			objectMapper.fromJson.withArgs(secondJson).returns(secondDomainObjectPromise);
-			
-			// Construct a DataService.
-			var dataService: DataService<number, MyDomainObject> = new DataService<number, MyDomainObject>(http, q);
-			
-			// Obtain a response through the DataService.
-			// Make sure that the response matches our expectations.
-			var responsePromise = dataService.getAll(resourceLocation, <any> objectMapper);
-			responsePromise.then((domainObjects: Object[]) => {
-				expect(domainObjects[0]).to.equal(firstDomainObject);
-				expect(domainObjects[1]).to.equal(secondDomainObject);
+			it('should return a rejected promise when the ObjectMapper returns an rejected promise', () => {
+				
+				objectMapper.fromJson.withArgs(firstJson).returns(q.reject());
+				
+				var dataService: DataService = new DataService(http, q, urlBuilder);
+				
+				var responsePromise = dataService.getSingle(id, errorSlug, parentDomainObject, <any> objectMapper);
+				expect(responsePromise).to.be.rejected;
 			});
 		});
 		
-		it('should return a rejected promise when getAll is called but the server returns an error', () => {
+		describe('getAll', () => {
 			
-			// Construct a DataService.
-			var dataService: DataService<number, MyDomainObject> = new DataService<number, MyDomainObject>(http, q);
+			it('should return a promise to a JSON-object', () => {
 			
-			// Obtain a response through the DataService.
-			var responsePromise = dataService.getAll(resourceLocationWithError, <any> objectMapper);
-			expect(responsePromise).to.be.rejected;
-		});
-		
-		it('should return a rejected promise when getAll is called but the ObjectMapper returns an error for one of the JSON objects', () => {
-			
-			objectMapper.fromJson.withArgs(firstJson).returns(firstDomainObjectPromise);
-			objectMapper.fromJson.withArgs(secondJson).returns(q.reject());
-			
-			// Construct a DataService.
-			var dataService: DataService<number, MyDomainObject> = new DataService<number, MyDomainObject>(http, q);
-			
-			// Obtain a response through the DataService.
-			var responsePromise = dataService.getAll(resourceLocation, <any> objectMapper);
-			expect(responsePromise).to.be.rejected;
-		});
+				objectMapper.fromJson.withArgs(firstJson).returns(firstDomainObjectPromise);
+				objectMapper.fromJson.withArgs(secondJson).returns(secondDomainObjectPromise);
 				
+				var dataService: DataService = new DataService(http, q, urlBuilder);
+				
+				// Obtain a response through the DataService.
+				// Make sure that the response matches our expectations.
+				var responsePromise = dataService.getCollection(slug, parentDomainObject, <any> objectMapper);
+				responsePromise.then((domainObjects: Object[]) => {
+					expect(domainObjects[0]).to.equal(firstDomainObject);
+					expect(domainObjects[1]).to.equal(secondDomainObject);
+				});
+			});
+			
+			it('should return a rejected promise when the server returns a rejected promise', () => {
+				
+				var dataService: DataService = new DataService(http, q, urlBuilder);
+				
+				var responsePromise = dataService.getCollection(errorSlug, parentDomainObject, <any> objectMapper);
+				expect(responsePromise).to.be.rejected;
+			});
+			
+			it('should return a rejected promise when the ObjectMapper returns a rejected promise for one of the JSON objects', () => {
+				
+				objectMapper.fromJson.withArgs(firstJson).returns(firstDomainObjectPromise);
+				objectMapper.fromJson.withArgs(secondJson).returns(q.reject());
+				
+				var dataService: DataService = new DataService(http, q, urlBuilder);
+				
+				var responsePromise = dataService.getCollection(errorSlug, parentDomainObject, <any> objectMapper);
+				expect(responsePromise).to.be.rejected;
+			});
+		});				
 	});
 	
 }

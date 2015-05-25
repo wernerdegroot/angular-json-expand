@@ -1,7 +1,6 @@
 module domainobjects {
 
-    // This library relies on domain objects having an id.
-    export interface DomainObject<T> {
-        id: T;
+    export interface DomainObject {        
+        getId(): number|string;
     }
 }

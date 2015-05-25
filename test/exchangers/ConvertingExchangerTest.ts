@@ -1,12 +1,16 @@
 /// <reference path="../../test/test-dependencies.ts" />
 /// <reference path="../../src/exchangers/ConvertingExchanger.ts" />
 /// <reference path="../../src/converters/Converter.ts" />
+/// <reference path="../../test/domainobjects/MockDomainObject.ts" />
+/// <reference path="../../src/domainobjects/DomainObject.ts" />
 
 module exchangers {
 
     import IPromise = angular.IPromise;
     import IQService = angular.IQService;
     import Converter = converters.Converter;
+    import MockDomainObject = domainobjects.MockDomainObject;
+    import DomainObject = domainobjects.DomainObject;
 
     describe('ConvertingExchanger', () => {
 
@@ -27,7 +31,7 @@ module exchangers {
 
         var q: IQService;
         var rootScope;
-
+        
         beforeEach(inject(($q: IQService, $rootScope) => {
             q = $q;
             rootScope = $rootScope;
@@ -54,16 +58,19 @@ module exchangers {
             json[jsonPropertyName] = numberValue;
 
             // Prepare domain object.
-            var domainObject = {};
+            var domainObject = new MockDomainObject();
+            
+            // Prepare parent domain object.
+            var parentDomainObject = new MockDomainObject();
 
             // Exchange a property between a JSON-object and a domain object.
-            var convertingExchanger = new ConvertingExchanger<number, string>(
+            var convertingExchanger = new ConvertingExchanger<number, string, DomainObject, DomainObject>(
                 converter,
                 jsonPropertyName,
                 domainObjectPropertyName
             );
 
-            convertingExchanger.fromJson(json, domainObject).then(() => {
+            convertingExchanger.fromJson(json, domainObject, 'slug', parentDomainObject).then(() => {
                 // Check that the property was exchanged successfully.
                 expect(domainObject[domainObjectPropertyName]).to.equal(stringValue);
             });
@@ -75,11 +82,11 @@ module exchangers {
             var json = {};
 
             // Prepare domain object.
-            var domainObject = {};
+            var domainObject = new MockDomainObject();
             domainObject[domainObjectPropertyName] = stringValue;
 
             // Exchange a property between a JSON-object and a domain object.
-            var convertingExchanger = new ConvertingExchanger<number, string>(
+            var convertingExchanger = new ConvertingExchanger<number, string, DomainObject, DomainObject>(
                 converter,
                 jsonPropertyName,
                 domainObjectPropertyName

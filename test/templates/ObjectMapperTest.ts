@@ -2,6 +2,9 @@
 /// <reference path="../../src/objectmappers/ObjectMapper.ts" />
 /// <reference path="../../src/objectmappers/ObjectMapperFactory.ts" />
 /// <reference path="../../src/exchangers/DefaultExchanger.ts" />
+/// <reference path="../../src/dataservices/UrlBuilder.ts" />
+/// <reference path="../../src/domainobjects/DomainObject.ts" />
+/// <reference path="../../test/domainobjects/MockDomainObject.ts" />
 
 module objectmappers {
 
@@ -9,6 +12,9 @@ module objectmappers {
     import IQService = angular.IQService;
     import IRootScopeService = angular.IRootScopeService;
     import DefaultExchanger = exchangers.DefaultExchanger;
+    import UrlBuilder = dataservices.UrlBuilder;
+    import MockDomainObject = domainobjects.MockDomainObject;
+    import DomainObject = domainobjects.DomainObject;
 
     describe('ObjectMapper', () => {
 
@@ -22,10 +28,16 @@ module objectmappers {
         var jsonNumberValueProperty: string = 'jsonNumberValue';
         var domainObjectStringValueProperty: string = 'domainObjectStringValue';
         var domainObjectNumberValueProperty: string = 'domainObjectNumberValue';
-
+        
+        var parentDomainObject;
+        var url = 'http://localhost/resources/14';
+        
         beforeEach(inject(($q: IQService, $rootScope: IRootScopeService) => {
             q = $q;
             rootScope = $rootScope;
+            
+            // Mock parent domain object.
+            parentDomainObject = new MockDomainObject();
         }));
 
         afterEach(() => {
@@ -38,15 +50,15 @@ module objectmappers {
             json[jsonStringValueProperty] = stringValue;
             json[jsonNumberValueProperty] = numberValue;
             
-            var emptyDomainObject: Object = {};
-            var domainObjectConstructor: () => Object = () => emptyDomainObject;
+            var emptyDomainObject: DomainObject = new MockDomainObject();
+            var domainObjectConstructor: () => DomainObject = () => emptyDomainObject;
             
             var objectMapperFactory = new ObjectMapperFactory(q);
-            var objectMapper: ObjectMapper<Object> = objectMapperFactory.create(domainObjectConstructor)
+            var objectMapper: ObjectMapper<DomainObject, DomainObject> = objectMapperFactory.create(domainObjectConstructor)
                 .add(new DefaultExchanger(q, jsonStringValueProperty, domainObjectStringValueProperty))
                 .add(new DefaultExchanger(q, jsonNumberValueProperty, domainObjectNumberValueProperty));
                     
-            var domainObjectPromise = objectMapper.fromJson(json);
+            var domainObjectPromise = objectMapper.fromJson(json, url, parentDomainObject);
             domainObjectPromise.then((domainObject: Object) => {
                 // DomainObject should be identical to the emptyDomainObject which
                 // should both be enriched with exchanged data.
@@ -58,14 +70,14 @@ module objectmappers {
         
         it('should transfer values from domain object to new JSON', () => {
 
-            var domainObject = {};
+            var domainObject: DomainObject = new MockDomainObject();
             domainObject[domainObjectStringValueProperty] = stringValue;
             domainObject[domainObjectNumberValueProperty] = numberValue;
             
             var domainObjectConstructor = sinon.stub();
             
             var objectMapperFactory = new ObjectMapperFactory(q);
-            var objectMapper: ObjectMapper<Object> = objectMapperFactory.create(domainObjectConstructor)
+            var objectMapper: ObjectMapper<DomainObject, DomainObject> = objectMapperFactory.create(domainObjectConstructor)
                 .add(new DefaultExchanger(q, jsonStringValueProperty, domainObjectStringValueProperty))
                 .add(new DefaultExchanger(q, jsonNumberValueProperty, domainObjectNumberValueProperty));
                     

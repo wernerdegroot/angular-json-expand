@@ -1,10 +1,12 @@
 /// <reference path="../../test/test-dependencies.ts" />
 /// <reference path="../../src/exchangers/DefaultExchanger.ts" />
+/// <reference path="../../test/domainobjects/MockDomainObject.ts" />
 
 module exchangers {
 
     import IPromise = angular.IPromise;
     import IQService = angular.IQService;
+    import MockDomainObject = domainobjects.MockDomainObject;
 
     describe('DefaultExchanger', () => {
 
@@ -17,10 +19,14 @@ module exchangers {
 
         var q: IQService;
         var rootScope;
+        var parentDomainObject;
+        var url = 'http://localhost/resources/14';
 
         beforeEach(inject(($q: IQService, $rootScope) => {
             q = $q;
             rootScope = $rootScope;
+            
+            parentDomainObject = new MockDomainObject();
         }));
 
         afterEach(() => {
@@ -34,7 +40,7 @@ module exchangers {
             json[jsonPropertyName] = value;
 
             // Prepare domain object.
-            var domainObject = {};
+            var domainObject = new MockDomainObject();
 
             // Exchange a property between a JSON-object and a domain object.
             var defaultExchanger = new DefaultExchanger(
@@ -43,7 +49,7 @@ module exchangers {
                 domainObjectPropertyName
             );
 
-            defaultExchanger.fromJson(json, domainObject).then(() => {
+            defaultExchanger.fromJson(json, domainObject, url, parentDomainObject).then(() => {
                 // Check that the property was exchanged successfully.
                 expect(domainObject[domainObjectPropertyName]).to.equal(value);
             });
@@ -55,7 +61,7 @@ module exchangers {
             var json = {};
 
             // Prepare domain object.
-            var domainObject = {};
+            var domainObject = new MockDomainObject();
             domainObject[domainObjectPropertyName] = value;
 
             // Exchange a property between a JSON-object and a domain object.
