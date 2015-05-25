@@ -5,6 +5,7 @@
 /// <reference path="../../src/dataservices/UrlBuilder.ts" />
 /// <reference path="../../src/domainobjects/DomainObject.ts" />
 /// <reference path="../../test/domainobjects/MockDomainObject.ts" />
+/// <reference path="../../src/metainfo/MetaInfo.ts" />
 
 module objectmappers {
 
@@ -15,6 +16,7 @@ module objectmappers {
     import UrlBuilder = dataservices.UrlBuilder;
     import MockDomainObject = domainobjects.MockDomainObject;
     import DomainObject = domainobjects.DomainObject;
+    import MetaInfo = metainfo.MetaInfo;
 
     describe('ObjectMapper', () => {
 
@@ -65,6 +67,11 @@ module objectmappers {
                 expect(domainObject).to.equal(emptyDomainObject);
                 expect(domainObject[domainObjectStringValueProperty]).to.equal(stringValue);
                 expect(domainObject[domainObjectNumberValueProperty]).to.equal(numberValue);
+                
+                // DomainObject should have meta info.
+                var metaInfo: MetaInfo = domainObject[MetaInfo.META_INFO_PROPERTY_NAME]; 
+                expect(metaInfo.getUrl()).to.equal(url);
+                expect(metaInfo.getParentDomainObject()).to.equal(parentDomainObject);
             });
         });
         
