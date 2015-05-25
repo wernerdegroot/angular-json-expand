@@ -41,7 +41,7 @@ module exchangers {
             var domainObject = new MockDomainObject();
             var parentDomainObject = new MockDomainObject();
             
-            repository.getAll.withArgs(parentDomainObject).returns(q.when(children));
+            repository.getAll.withArgs(domainObject).returns(q.when(children));
 
             var childResourceExchanger = new ChildResourceExchanger(q, domainObjectPropertyName, repository);
             
@@ -56,7 +56,7 @@ module exchangers {
             var domainObject = new MockDomainObject();
             var parentDomainObject = new MockDomainObject();
             
-            repository.getAll.withArgs(parentDomainObject).returns(q.reject());
+            repository.getAll.withArgs(domainObject).returns(q.reject());
 
             var childResourceExchanger = new ChildResourceExchanger(q, domainObjectPropertyName, repository);
             

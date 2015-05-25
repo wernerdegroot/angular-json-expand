@@ -4,4 +4,8 @@ angular.module('myApp', ['angularJsonExpand'])
 
 	.controller(MyController.injectAs, MyController)
 	
-	.service(BlogPostRepository.injectAs, BlogPostRepository);
+	.service(PersonRepository.injectAs, PersonRepository)
+	
+	.service(BlogPostRepository.injectAs, BlogPostRepository)
+	
+	.service(CommentRepository.injectAs, CommentRepository);

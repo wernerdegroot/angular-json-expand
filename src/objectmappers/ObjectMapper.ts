@@ -3,7 +3,11 @@
 /// <reference path="../../src/exchangers/Exchanger.ts" />
 /// <reference path="../../src/exchangers/DefaultExchanger.ts" />
 /// <reference path="../../src/exchangers/MetaInfoExchanger.ts" />
+/// <reference path="../../src/exchangers/ChildResourceExchanger.ts" />
+/// <reference path="../../src/exchangers/ConvertingExchanger.ts" />
 /// <reference path="../../src/domainobjects/DomainObject.ts" />
+/// <reference path="../../src/repositories/Repository.ts" />
+/// <reference path="../../src/converters/Converter.ts" />
 
 module objectmappers {
     
@@ -11,9 +15,13 @@ module objectmappers {
     import Exchanger = exchangers.Exchanger;
     import DefaultExchanger = exchangers.DefaultExchanger;
     import MetaInfoExchanger = exchangers.MetaInfoExchanger;
+    import ChildResourceExchanger = exchangers.ChildResourceExchanger;
+    import ConvertingExchanger = exchangers.ConvertingExchanger;
     import IQService = angular.IQService;
     import IPromise = angular.IPromise;
     import DomainObject = domainobjects.DomainObject;
+    import Repository = repositories.Repository;
+    import Converter = converters.Converter;
     
     export class ObjectMapper<DOMAIN_OBJECT_TYPE extends DomainObject, PARENT_DOMAIN_OBJECT_TYPE extends DomainObject> {
         
@@ -33,6 +41,14 @@ module objectmappers {
         
         defaultExchanger(jsonPropertyName: string, domainObjectPropertyName: string): ObjectMapper<DOMAIN_OBJECT_TYPE, PARENT_DOMAIN_OBJECT_TYPE> {
             return this.add(new DefaultExchanger(this.$q, jsonPropertyName, domainObjectPropertyName));
+        }
+        
+        childResourceExchanger<CHILD_DOMAIN_OBJECT_TYPE extends DomainObject>(domainObjectPropertyName: string, repository: Repository<CHILD_DOMAIN_OBJECT_TYPE, DOMAIN_OBJECT_TYPE>) {
+            return this.add(new ChildResourceExchanger<CHILD_DOMAIN_OBJECT_TYPE, DOMAIN_OBJECT_TYPE, PARENT_DOMAIN_OBJECT_TYPE>(this.$q, domainObjectPropertyName, repository));
+        }
+        
+        convertingExchanger<S, T>(jsonPropertyName: string, domainObjectPropertyName: string, converter: Converter<S, T>) {
+            return this.add(new ConvertingExchanger<S, T, DOMAIN_OBJECT_TYPE, PARENT_DOMAIN_OBJECT_TYPE>(converter, jsonPropertyName, domainObjectPropertyName));
         }
         
         add(exchanger: Exchanger<DOMAIN_OBJECT_TYPE, PARENT_DOMAIN_OBJECT_TYPE>): ObjectMapper<DOMAIN_OBJECT_TYPE, PARENT_DOMAIN_OBJECT_TYPE> {

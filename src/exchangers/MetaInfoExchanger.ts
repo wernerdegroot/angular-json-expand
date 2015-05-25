@@ -19,10 +19,9 @@ module exchangers {
 		// Transfer data from a JSON object to a domain object.
         // Returns a promise when the data is transferred.
         fromJson(json: Object, domainObject: DOMAIN_OBJECT_TYPE, url: string, parentObject: PARENT_DOMAIN_OBJECT_TYPE): IPromise<any> {
-            return this.$q.when().then(() => {
-				var metaInfo: MetaInfo = new MetaInfo(url, parentObject);
-				domainObject[MetaInfo.META_INFO_PROPERTY_NAME] = metaInfo;
-			});
+            var metaInfo: MetaInfo = new MetaInfo(url, parentObject);
+			domainObject[MetaInfo.META_INFO_PROPERTY_NAME] = metaInfo;
+			return this.$q.when();
 		}
         
         // Transfer data from a domain object to a JSON object.

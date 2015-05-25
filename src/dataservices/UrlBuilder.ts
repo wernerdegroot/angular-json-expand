@@ -8,6 +8,8 @@ module dataservices {
 	
 	export class UrlBuilder {
 		
+		static injectAs: string = 'urlBuilder';
+		
 		buildSingleUrl(id: number|string, slug: string, parentDomainObject: DomainObject): string {
 			return this.buildCollectionUrl(slug, parentDomainObject) + '/' + id;
 		}

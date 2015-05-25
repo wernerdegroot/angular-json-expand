@@ -5,7 +5,9 @@ module domainobjects {
 	
 	import MetaInfo = metainfo.MetaInfo;
 
-    export class RootObject implements DomainObject {        
+    export class RootObject implements DomainObject {
+		
+		static injectAs: string = 'rootObject';        
         
 		constructor(rootUrl: string) {
 			this[MetaInfo.META_INFO_PROPERTY_NAME] = new MetaInfo(rootUrl, null);

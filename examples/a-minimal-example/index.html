@@ -5,15 +5,22 @@
 		
 		<script src="../../node_modules/angular/angular.js"></script>
 		<script src="../../dist/src/angular-json-expand.js"></script>
-		<script src="ResourceRoot.js"></script>
-		<script src="CompanyResourceLocation.js"></script>
-		<script src="EmployeeResourceLocation.js"></script>
-		<script src="Employee.js"></script>
-		<script src="EmployeeRepository.js"></script>
+		<script src="BlogPost.js"></script>
+		<script src="BlogPostRepository.js"></script>
 		<script src="MyController.js"></script>
 		<script src="MyApp.js"></script>
 	</head>
+	
 	<body ng-app="myApp" ng-controller="MyController as ctrl">
 		
+		<h1>Blog posts:</h1>
+		
+		<!-- My first blog post: -->
+		<h2>{{ctrl.myFirstBlogPost.title}}</h2>
+		
+		<!-- Summary -->
+		<p>
+			{{ctrl.myFirstBlogPost.getFirstSentence()}}
+		</p>
 	</body>
 </html>

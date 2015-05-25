@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<title>With nested resources and other relationships</title>
+		
+		<script src="../../node_modules/angular/angular.js"></script>
+		<script src="../../dist/src/angular-json-expand.js"></script>
+		<script src="Person.js"></script>
+		<script src="PersonRepository.js"></script>
+		<script src="Comment.js"></script>
+		<script src="CommentRepository.js"></script>
+		<script src="BlogPost.js"></script>
+		<script src="BlogPostRepository.js"></script>
+		<script src="MyController.js"></script>
+		<script src="MyApp.js"></script>
+	</head>
+	
+	<body ng-app="myApp" ng-controller="MyController as ctrl">
+		
+		<h1>Blog posts:</h1>
+		
+		<!-- My first blog post: -->
+		<h2>{{ctrl.myFirstBlogPost.title}}</h2>
+		
+		<p>Author: <a href="mailto:{{ctrl.myFirstBlogPost.author.emailAddress}}">{{ctrl.myFirstBlogPost.author.getFullName()}}</a></p>
+		
+		<!-- Summary -->
+		<p>
+			{{ctrl.myFirstBlogPost.getFirstSentence()}}
+		</p>
+		
+		<!-- Comments -->
+		<h3>Comments</h3>
+		
+		<p ng-repeat="comment in ctrl.myFirstBlogPost.comments">
+			<strong><a href="mailto:{{comment.author.emailAddress}}">{{comment.author.getFullName()}}</a>: </strong> {{comment.text}}
+		</p>
+	</body>
+</html>

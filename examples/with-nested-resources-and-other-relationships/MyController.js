@@ -8,12 +8,6 @@ var MyController = function (blogPostRepository, rootObject) {
 	myFirstBlogPostPromise.then(function (myFirstBlogPost) {
 		self.myFirstBlogPost = myFirstBlogPost;
 	});
-	
-	// Try to obtain a non-existing blog post (which, of course, will fail).
-	var nonExistingBlogPostPromise = blogPostRepository.getById('does-not-exist', rootObject);
-	nonExistingBlogPostPromise.catch(function () {
-		console.error('An error occurred when fetching a non-existing blog post!')
-	});
 };
 
 MyController.injectAs = 'MyController';
