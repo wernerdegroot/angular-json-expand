@@ -56,9 +56,9 @@ module objectmappers {
             return this;
         }
 
-        fromJson(json: Object, url: string, parentDomainObject: PARENT_DOMAIN_OBJECT_TYPE): IPromise<DOMAIN_OBJECT_TYPE> {
+        fromJson(json: Object, id: string|number, url: string, parentDomainObject: PARENT_DOMAIN_OBJECT_TYPE): IPromise<DOMAIN_OBJECT_TYPE> {
             var domainObject: DOMAIN_OBJECT_TYPE = this.domainObjectConstructor();
-            return this.compositeExchanger.fromJson(json, domainObject, url, parentDomainObject).then(() => {
+            return this.compositeExchanger.fromJson(json, domainObject, id, url, parentDomainObject).then(() => {
                 return domainObject;
             });
         }

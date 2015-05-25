@@ -18,7 +18,7 @@ module exchangers {
 			private repository: Repository<CHILD_DOMAIN_OBJECT_TYPE, DOMAIN_OBJECT_TYPE>) {
         }
 
-        fromJson(json: Object, domainObject: DOMAIN_OBJECT_TYPE, url: string, parentObject: PARENT_DOMAIN_OBJECT_TYPE): IPromise<any> {
+        fromJson(json: Object, domainObject: DOMAIN_OBJECT_TYPE, id: string|number, url: string, parentObject: PARENT_DOMAIN_OBJECT_TYPE): IPromise<any> {
             return this.repository.getAll(domainObject).then((children: CHILD_DOMAIN_OBJECT_TYPE[]) => {
 				domainObject[this.domainObjectPropertyName] = children;
 			});

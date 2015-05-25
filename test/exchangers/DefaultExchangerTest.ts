@@ -20,6 +20,7 @@ module exchangers {
         var q: IQService;
         var rootScope;
         var parentDomainObject;
+        var id = 14;
         var url = 'http://localhost/resources/14';
 
         beforeEach(inject(($q: IQService, $rootScope) => {
@@ -49,7 +50,7 @@ module exchangers {
                 domainObjectPropertyName
             );
 
-            defaultExchanger.fromJson(json, domainObject, url, parentDomainObject).then(() => {
+            defaultExchanger.fromJson(json, domainObject, id, url, parentDomainObject).then(() => {
                 // Check that the property was exchanged successfully.
                 expect(domainObject[domainObjectPropertyName]).to.equal(value);
             });

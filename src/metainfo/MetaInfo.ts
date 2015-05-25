@@ -9,8 +9,13 @@ module metainfo {
 		public static META_INFO_PROPERTY_NAME = '_metaInfo';
 		
 		constructor(
+			private id: string|number,
 			private url: string,
 			private parentDomainObject: DomainObject) {		
+		}
+		
+		getId(): string|number {
+			return this.id;
 		}
 		
 		getUrl(): string {

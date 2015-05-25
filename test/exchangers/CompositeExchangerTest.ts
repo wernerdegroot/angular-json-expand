@@ -46,10 +46,10 @@ module exchangers {
             compositeExchanger.add(firstExchanger);
             compositeExchanger.add(secondExchanger);
 
-            compositeExchanger.fromJson(json, domainObject, 'slug', parentDomainObject);
+            compositeExchanger.fromJson(json, domainObject, 14, 'slug', parentDomainObject);
 
-            expect(firstExchanger.fromJson.calledWith(json, domainObject, 'slug', parentDomainObject)).to.be.ok;
-            expect(secondExchanger.fromJson.calledWith(json, domainObject, 'slug', parentDomainObject)).to.be.ok;
+            expect(firstExchanger.fromJson.calledWith(json, domainObject, 14, 'slug', parentDomainObject)).to.be.ok;
+            expect(secondExchanger.fromJson.calledWith(json, domainObject, 14, 'slug', parentDomainObject)).to.be.ok;
 
             expect(firstExchanger.toJson.called).to.not.be.ok;
             expect(secondExchanger.toJson.called).to.not.be.ok;

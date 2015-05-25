@@ -11,7 +11,7 @@ module exchangers {
 
         // Transfer data from a JSON object to a domain object.
         // Returns a promise when the data is transferred.
-        fromJson(json: Object, domainObject: DOMAIN_OBJECT_TYPE, url: string, parentDomainObject: PARENT_DOMAIN_OBJECT_TYPE): IPromise<any>;
+        fromJson(json: Object, domainObject: DOMAIN_OBJECT_TYPE, id: string|number, url: string, parentDomainObject: PARENT_DOMAIN_OBJECT_TYPE): IPromise<any>;
         
         // Transfer data from a domain object to a JSON object.
         // Returns a promise when the data is transferred.

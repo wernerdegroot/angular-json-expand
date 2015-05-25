@@ -15,7 +15,8 @@ module exchangers {
     describe('ChildResourceExchanger', () => {
 
         var domainObjectPropertyName = "domainObjectProperty";
-        var slug = 'slug';
+        var url = 'http://localhost:8080/api';
+        var id = 14;
 
         var q: IQService;
         var rootScope: IRootScopeService;
@@ -45,7 +46,7 @@ module exchangers {
 
             var childResourceExchanger = new ChildResourceExchanger(q, domainObjectPropertyName, repository);
             
-            var childrenFetchedPromise: IPromise<any> = childResourceExchanger.fromJson({}, domainObject, slug, parentDomainObject);
+            var childrenFetchedPromise: IPromise<any> = childResourceExchanger.fromJson({}, domainObject, id, url, parentDomainObject);
             childrenFetchedPromise.then(() => {
                 expect(domainObject[domainObjectPropertyName]).to.equal(children); 
             });
@@ -60,7 +61,7 @@ module exchangers {
 
             var childResourceExchanger = new ChildResourceExchanger(q, domainObjectPropertyName, repository);
             
-            var childrenFetchedPromise: IPromise<any> = childResourceExchanger.fromJson({}, domainObject, slug, parentDomainObject);
+            var childrenFetchedPromise: IPromise<any> = childResourceExchanger.fromJson({}, domainObject, id, url, parentDomainObject);
             expect(childrenFetchedPromise).to.be.rejected;
         });
         

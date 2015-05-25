@@ -13,6 +13,7 @@ module exchangers {
 	describe('MetaInfoExchanger', () => {
 		
 		// Constants:
+		var id = 14;
 		var url = 'http://localhost:8080/api';
 		
 		// Mocks and services:
@@ -35,11 +36,12 @@ module exchangers {
             var parentDomainObject = new MockDomainObject();
 			
 			var metaInfoExchanger = new MetaInfoExchanger(q);
-			var metaInfoAddedPromise = metaInfoExchanger.fromJson({}, domainObject, url, parentDomainObject);
+			var metaInfoAddedPromise = metaInfoExchanger.fromJson({}, domainObject, id, url, parentDomainObject);
 			metaInfoAddedPromise.then(() => {
 				
 				var metaInfo: MetaInfo = domainObject[MetaInfo.META_INFO_PROPERTY_NAME];
 				
+				expect(metaInfo.getId()).to.equal(id);
 				expect(metaInfo.getParentDomainObject()).to.equal(parentDomainObject);
 				expect(metaInfo.getUrl()).to.equal(url);
 			});

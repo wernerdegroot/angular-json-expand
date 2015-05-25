@@ -10,7 +10,7 @@ module domainobjects {
 		static injectAs: string = 'rootObject';        
         
 		constructor(rootUrl: string) {
-			this[MetaInfo.META_INFO_PROPERTY_NAME] = new MetaInfo(rootUrl, null);
+			this[MetaInfo.META_INFO_PROPERTY_NAME] = new MetaInfo(null, rootUrl, null);
 		}
 		
 		getId(): number|string {

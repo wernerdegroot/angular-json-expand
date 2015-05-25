@@ -20,7 +20,7 @@ module exchangers {
             private domainObjectPropertyName: string) {
         }
 
-        fromJson(json: Object, domainObject: DOMAIN_OBJECT_TYPE, url: string, parentDomainObject: PARENT_DOMAIN_OBJECT_TYPE): IPromise<any> {
+        fromJson(json: Object, domainObject: DOMAIN_OBJECT_TYPE, id: string|number, url: string, parentDomainObject: PARENT_DOMAIN_OBJECT_TYPE): IPromise<any> {
             var jsonValue: S = <S> json[this.jsonPropertyName];
             var domainObjectValuePromise: IPromise<T> = this.converter.from(jsonValue);
             return domainObjectValuePromise.then((domainObjectValue: T) => {

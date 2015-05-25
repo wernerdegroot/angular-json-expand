@@ -33,7 +33,7 @@
 		<h3>Comments</h3>
 		
 		<p ng-repeat="comment in ctrl.myFirstBlogPost.comments">
-			<strong><a href="mailto:{{comment.author.emailAddress}}">{{comment.author.getFullName()}}</a>: </strong> {{comment.text}}
+			<strong><a href="mailto:{{comment.author.emailAddress}}">{{comment.author.getFullName()}}</a>:</strong> {{comment.text}}
 		</p>
 	</body>
 </html>

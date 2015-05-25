@@ -32,7 +32,7 @@ module dataservices {
 			var url: string = this.urlBuilder.buildSingleUrl(id, slug, parentDomainObject);
 			var responsePromise: IHttpPromise<Object> = this.$http.get<Object>(url);
 			var responseHandler = (response: IHttpPromiseCallbackArg<Object>) => {
-				return objectMapper.fromJson(response.data, url, parentDomainObject);
+				return objectMapper.fromJson(response.data, id, url, parentDomainObject);
 			};
 			
 			return responsePromise.then(responseHandler);
@@ -40,14 +40,18 @@ module dataservices {
 		
 		getCollection<DOMAIN_OBJECT_TYPE extends DomainObject, PARENT_DOMAIN_OBJECT_TYPE extends DomainObject>(slug: string, parentDomainObject: PARENT_DOMAIN_OBJECT_TYPE, objectMapper: ObjectMapper<DOMAIN_OBJECT_TYPE, PARENT_DOMAIN_OBJECT_TYPE>): IPromise<DOMAIN_OBJECT_TYPE[]> {
 			
-			var self = this;
+			var jsonToDomainObject = (json: Object) => {
+				var id: number|string = json['id'];
+				var url = this.urlBuilder.buildSingleUrl(id, slug, parentDomainObject);
+				return objectMapper.fromJson(json, id, url, parentDomainObject);
+			}
 			
 			var allUrl: string = this.urlBuilder.buildCollectionUrl(slug, parentDomainObject);
 			var responsePromise = this.$http.get<Object[]>(allUrl);
 			var responseHandler = (response: IHttpPromiseCallbackArg<Object[]>) => {
 				var jsonPromises: IPromise<DOMAIN_OBJECT_TYPE>[] 
-					= response.data.map((json: Object) => objectMapper.fromJson(json, slug, parentDomainObject)); 
-				return self.$q.all(jsonPromises);
+					= response.data.map(jsonToDomainObject); 
+				return this.$q.all(jsonPromises);
 			};
 			
 			return responsePromise.then(responseHandler);

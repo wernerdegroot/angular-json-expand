@@ -70,7 +70,7 @@ module exchangers {
                 domainObjectPropertyName
             );
 
-            convertingExchanger.fromJson(json, domainObject, 'slug', parentDomainObject).then(() => {
+            convertingExchanger.fromJson(json, domainObject, 14, 'http://localhost:8080/api', parentDomainObject).then(() => {
                 // Check that the property was exchanged successfully.
                 expect(domainObject[domainObjectPropertyName]).to.equal(stringValue);
             });

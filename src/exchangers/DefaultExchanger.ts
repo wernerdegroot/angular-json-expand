@@ -18,7 +18,7 @@ module exchangers {
             private domainObjectPropertyName: string) {
         }
 
-        fromJson(json: Object, domainObject: DOMAIN_OBJECT_TYPE, url: string, parentDomainObject: PARENT_DOMAIN_OBJECT_TYPE): IPromise<any> {
+        fromJson(json: Object, domainObject: DOMAIN_OBJECT_TYPE, id: string|number, url: string, parentDomainObject: PARENT_DOMAIN_OBJECT_TYPE): IPromise<any> {
             var jsonValue = json[this.jsonPropertyName];
             domainObject[this.domainObjectPropertyName] = jsonValue;
             return this.$q.when(undefined);

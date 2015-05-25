@@ -25,10 +25,10 @@ module exchangers {
         }
 
         // Returns a Promise that is resolved when all data is exchanged.
-        fromJson(json: Object, domainObject: DOMAIN_OBJECT_TYPE, slug: string, parentDomainObject: PARENT_DOMAIN_OBJECT_TYPE): IPromise<any> {
+        fromJson(json: Object, domainObject: DOMAIN_OBJECT_TYPE, id: string|number, url: string, parentDomainObject: PARENT_DOMAIN_OBJECT_TYPE): IPromise<any> {
             var promises: IPromise<any>[] = [];
             this.exchangers.forEach((exchanger: Exchanger<DOMAIN_OBJECT_TYPE, PARENT_DOMAIN_OBJECT_TYPE>) => {
-                promises.push(exchanger.fromJson(json, domainObject, slug, parentDomainObject));
+                promises.push(exchanger.fromJson(json, domainObject, id, url, parentDomainObject));
             });
             return this.$q.all(promises);
         }

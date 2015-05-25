@@ -33,6 +33,7 @@ module objectmappers {
         
         var parentDomainObject;
         var url = 'http://localhost/resources/14';
+        var id = 14;
         
         beforeEach(inject(($q: IQService, $rootScope: IRootScopeService) => {
             q = $q;
@@ -60,7 +61,7 @@ module objectmappers {
                 .add(new DefaultExchanger(q, jsonStringValueProperty, domainObjectStringValueProperty))
                 .add(new DefaultExchanger(q, jsonNumberValueProperty, domainObjectNumberValueProperty));
                     
-            var domainObjectPromise = objectMapper.fromJson(json, url, parentDomainObject);
+            var domainObjectPromise = objectMapper.fromJson(json, id, url, parentDomainObject);
             domainObjectPromise.then((domainObject: Object) => {
                 // DomainObject should be identical to the emptyDomainObject which
                 // should both be enriched with exchanged data.
