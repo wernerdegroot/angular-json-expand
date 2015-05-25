@@ -25,11 +25,13 @@ module dataservices {
 		var firstJsonResponsePromise: IPromise<Object>;
 		var allJsonResponsePromise: IPromise<Object>;
 		var errorResponsePromise: IPromise<Object>;
-		var singleUrl: string;
+		var firstUrl: string;
+		var secondUrl: string;
 		var allUrl: string;
 		var errorUrl: string;
 		var objectMapper;
-		var id: number = 42;
+		var firstId: number = 42;
+		var secondId: number = 43;
 		var slug: string = 'slug';
 		var errorSlug: string = 'error-slug';
 		var urlBuilder;
@@ -53,13 +55,16 @@ module dataservices {
 			
 			// Mock responses.
 			firstJson = createMockObject('7bf39e45713b');
+			firstJson['id'] = firstId;
 			firstJsonResponsePromise = q.when({data: firstJson});
 			secondJson = createMockObject('f9f5b3799488');
+			secondJson['id'] = secondId;
 			allJsonResponsePromise = q.when({data: [firstJson, secondJson]});
 			errorResponsePromise = q.reject();
 			
 			// Some URL's.
-			singleUrl = '/api/some-resource/42';
+			firstUrl = '/api/some-resource/42';
+			secondUrl = '/api/some-resource/43';
 			allUrl = '/api/some-resource';
 			errorUrl = '/api/some-resource/non-existing-id';
 			
@@ -67,7 +72,7 @@ module dataservices {
 			http = {
 				get: sinon.stub()	
 			};
-			http.get.withArgs(singleUrl).returns(firstJsonResponsePromise);
+			http.get.withArgs(firstUrl).returns(firstJsonResponsePromise);
 			http.get.withArgs(allUrl).returns(allJsonResponsePromise);
 			http.get.withArgs(errorUrl).returns(errorResponsePromise);
 			
@@ -81,9 +86,10 @@ module dataservices {
 			
 			// Mock an UrlBuilder.
 			urlBuilder = new MockUrlBuilder();
-			urlBuilder.buildSingleUrl.withArgs(id, slug, parentDomainObject).returns(singleUrl);
+			urlBuilder.buildSingleUrl.withArgs(firstId, slug, parentDomainObject).returns(firstUrl);
+			urlBuilder.buildSingleUrl.withArgs(secondId, slug, parentDomainObject).returns(secondUrl);
 			urlBuilder.buildCollectionUrl.withArgs(slug, parentDomainObject).returns(allUrl);
-			urlBuilder.buildSingleUrl.withArgs(id, errorSlug, parentDomainObject).returns(errorUrl);
+			urlBuilder.buildSingleUrl.withArgs(firstId, errorSlug, parentDomainObject).returns(errorUrl);
 			urlBuilder.buildCollectionUrl.withArgs(errorSlug, parentDomainObject).returns(errorUrl);
 		}));
 		
@@ -99,17 +105,20 @@ module dataservices {
 				
 				var dataService: DataService = new DataService(http, q, urlBuilder);
 				
-				var responsePromise = dataService.getSingle(id, slug, parentDomainObject, <any> objectMapper);
+				var responsePromise = dataService.getSingle(firstId, slug, parentDomainObject, <any> objectMapper);
 				
 				expect(responsePromise).to.not.be.rejected;
 				expect(responsePromise).to.eventually.equal(firstDomainObject);
+				responsePromise.then(() => {
+					expect(objectMapper.fromJson.calledWith(firstJson, firstId, firstUrl, parentDomainObject)).to.be.ok;
+				});
 			});
 			
 			it('should return a rejected promise when the server returns a rejected promise', () => {
 				
 				var dataService: DataService = new DataService(http, q, urlBuilder);
 				
-				var responsePromise = dataService.getSingle(id, errorSlug, parentDomainObject, <any> objectMapper);
+				var responsePromise = dataService.getSingle(firstId, errorSlug, parentDomainObject, <any> objectMapper);
 				
 				expect(responsePromise).to.be.rejected;
 			});
@@ -120,7 +129,8 @@ module dataservices {
 				
 				var dataService: DataService = new DataService(http, q, urlBuilder);
 				
-				var responsePromise = dataService.getSingle(id, errorSlug, parentDomainObject, <any> objectMapper);
+				var responsePromise = dataService.getSingle(firstId, errorSlug, parentDomainObject, <any> objectMapper);
+				
 				expect(responsePromise).to.be.rejected;
 			});
 		});
@@ -140,6 +150,9 @@ module dataservices {
 				responsePromise.then((domainObjects: Object[]) => {
 					expect(domainObjects[0]).to.equal(firstDomainObject);
 					expect(domainObjects[1]).to.equal(secondDomainObject);
+					
+					expect(objectMapper.fromJson.calledWith(firstJson, firstId, firstUrl, parentDomainObject)).to.be.ok;
+					expect(objectMapper.fromJson.calledWith(secondJson, secondId, secondUrl, parentDomainObject)).to.be.ok;
 				});
 			});
 			
